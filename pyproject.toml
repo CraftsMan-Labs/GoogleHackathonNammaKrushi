@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "namma-krushi"
+version = "1.0.0"
+description = "AI-powered farming assistant for Karnataka farmers"
+authors = [{name = "Namma Krushi Team", email = "team@nammakrushi.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn[standard]==0.24.0",
+    "sqlalchemy==2.0.23",
+    "pydantic[email]==2.5.0",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-multipart==0.0.6",
+    "aiofiles==23.2.1",
+    "httpx==0.25.1",
+    "google-generativeai==0.3.0",
+    "python-dotenv==1.0.0",
+    "requests==2.31.0",
+    "pillow==10.1.0",
+    "pytest==7.4.3",
+    "pytest-asyncio==0.21.1",
+    "ruff==0.1.6",
+    "black==23.11.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "ruff",
+    "black",
+    "mypy",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+select = ["E", "W", "F", "I", "N", "UP", "ANN", "S", "B", "A", "COM", "C4", "DTZ", "T10", "EM", "EXE", "ISC", "ICN", "G", "INP", "PIE", "T20", "PYI", "PT", "Q", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "PTH", "ERA", "PD", "PGH", "PL", "TRY", "NPY", "RUF"]
+ignore = ["D", "ANN101", "ANN102", "S101", "S104", "COM812", "ISC001"]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101", "ANN", "PLR2004"]
+"src/app/models/*" = ["A003"]
+
+[tool.black]
+target-version = ["py39"]
+line-length = 88
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "google.generativeai",
+    "passlib.*",
+    "jose.*",
+]
+ignore_missing_imports = true

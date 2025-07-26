@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class DailyLogCreate(BaseModel):
     """Schema for creating a daily log entry."""
+
     log_date: date = Field(default_factory=lambda: date.today())
     activity_type: Optional[str] = Field(None, max_length=50)
     activity_details: Optional[dict] = None
@@ -26,6 +27,7 @@ class DailyLogCreate(BaseModel):
 
 class DailyLogUpdate(BaseModel):
     """Schema for updating a daily log entry."""
+
     activity_type: Optional[str] = Field(None, max_length=50)
     activity_details: Optional[dict] = None
     notes: Optional[str] = Field(None, max_length=1000)
@@ -44,6 +46,7 @@ class DailyLogUpdate(BaseModel):
 
 class DailyLogResponse(BaseModel):
     """Schema for daily log response."""
+
     id: int
     farm_id: int
     log_date: date
@@ -67,6 +70,6 @@ class DailyLogResponse(BaseModel):
     ai_recommendations: Optional[List[Any]]
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True

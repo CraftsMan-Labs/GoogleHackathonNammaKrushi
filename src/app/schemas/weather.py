@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class WeatherCreate(BaseModel):
     """Schema for creating weather data."""
+
     weather_date: date = Field(default_factory=lambda: date.today())
     latitude: Optional[float] = Field(None, ge=-90, le=90)
     longitude: Optional[float] = Field(None, ge=-180, le=180)
@@ -35,6 +36,7 @@ class WeatherCreate(BaseModel):
 
 class WeatherResponse(BaseModel):
     """Schema for weather response."""
+
     id: int
     user_id: int
     weather_date: date
@@ -63,6 +65,6 @@ class WeatherResponse(BaseModel):
     pest_disease_risk: Optional[str]
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True

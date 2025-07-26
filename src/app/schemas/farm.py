@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class FarmCreate(BaseModel):
     """Schema for creating a new farm."""
+
     farm_name: str = Field(..., min_length=2, max_length=100)
     latitude: float = Field(..., ge=-90, le=90)
     longitude: float = Field(..., ge=-180, le=180)
@@ -28,6 +29,7 @@ class FarmCreate(BaseModel):
 
 class FarmUpdate(BaseModel):
     """Schema for updating farm information."""
+
     farm_name: Optional[str] = Field(None, min_length=2, max_length=100)
     address: Optional[str] = Field(None, max_length=500)
     village: Optional[str] = Field(None, max_length=100)
@@ -47,6 +49,7 @@ class FarmUpdate(BaseModel):
 
 class FarmResponse(BaseModel):
     """Schema for farm response."""
+
     id: int
     user_id: int
     farm_name: str
@@ -72,6 +75,6 @@ class FarmResponse(BaseModel):
     average_yield: Optional[float]
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True

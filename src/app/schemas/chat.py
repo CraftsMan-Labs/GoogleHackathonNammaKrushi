@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class ChatMessage(BaseModel):
     """Schema for sending a chat message."""
+
     message: str = Field(..., min_length=1, max_length=2000)
     farm_id: Optional[int] = None
     language: str = Field(default="kn", pattern="^(kn|en)$")
@@ -16,6 +17,7 @@ class ChatMessage(BaseModel):
 
 class ChatResponse(BaseModel):
     """Schema for chat response."""
+
     id: int
     user_id: int
     farm_id: Optional[int]
@@ -33,6 +35,6 @@ class ChatResponse(BaseModel):
     user_feedback: Optional[str]
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True

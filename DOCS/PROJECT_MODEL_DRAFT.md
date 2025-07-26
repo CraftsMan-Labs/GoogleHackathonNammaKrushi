@@ -9,47 +9,43 @@ Enable Voice-First Interaction: Overcome literacy barriers by allowing farmers t
 Tech Stack: Use of Google AI technologies is mandatory.
 Special prize for using Firebase Studio and deploying the project.
 
-1)	Location data
-a. 	Geo data – Geo datasets and Geo Earth API from Google Earth API
-b. 	Climate data -  Weather API
-c. 	Water Table data this google search API from gov website
-Outcomes:
-        	Crop recommendations – Good profits avoid poor harvest and great funding
-           
-2)	Journal Farm Diaries – Voice all data via voice API schema
-a. 	Tool call to populate
-                                           	i. 	Crop Image data
-                                         	ii. 	Video data ??
-                                        	iii. 	Resutls outcomes disease
-                                        	iv. 	Pesticides used/ Fertiliser
-                                          	v. 	 database
-                                        	vi. 	Soil health status
-                                       	vii. 	Farmer notes
-                                     	viii. 	Yield behaviour
-                                        	ix. 	Harvest notes
-                                          	x. 	Cost/sales
-b. 	Disease Dataset – public datasets – Cure (Optional if we have time) deep research citations
-Outcomes
-1)	Yeild Predication
-2)	Get help/Help in a better way
-3)	Farmers Personlised Prompt
- 
-4)	Prediction of datascience (Yeild behavior trends across similar farmers) sales data prediction , consumption to sales to period. (Horticulture department)
- 
-5)	Everything will be available as MCP
- 
-6)	Farmers details
- 
- 
+1. Location data
+   a. Geo data – Geo datasets and Geo Earth API from Google Earth API
+   b. Climate data - Weather API
+   c. Water Table data this google search API from gov website
+   Outcomes:
+   Crop recommendations – Good profits avoid poor harvest and great funding
+2. Journal Farm Diaries – Voice all data via voice API schema
+   a. Tool call to populate
+   i. Crop Image data
+   ii. Video data ??
+   iii. Resutls outcomes disease
+   iv. Pesticides used/ Fertiliser
+   v. database
+   vi. Soil health status
+   vii. Farmer notes
+   viii. Yield behaviour
+   ix. Harvest notes
+   x. Cost/sales
+   b. Disease Dataset – public datasets – Cure (Optional if we have time) deep research citations
+   Outcomes
+3. Yeild Predication
+4. Get help/Help in a better way
+5. Farmers Personlised Prompt
+
+6. Prediction of datascience (Yeild behavior trends across similar farmers) sales data prediction , consumption to sales to period. (Horticulture department)
+
+7. Everything will be available as MCP
+
+8. Farmers details
+
 Simple Auth
 Simple database
 ECS
 Metadata and SVG handling
 User Profile/Preview
- 
- 
-Potential to solve a problem
 
+Potential to solve a problem
 
 Overall Features
 Farms
@@ -62,7 +58,7 @@ Insight
 Check-ins - Daily check-ins
 Scan the crops daily - First code → AI agents
 Conversation -First code → AI agents
-Questions?? 
+Questions??
 Market
 ONDC/ farmer sales/ Supply demand trends : First code → AI agents
 Dashboard
@@ -73,15 +69,13 @@ Information and QA: First code → AI agents
 Gov Schemes : First code → AI agents
 User-setup ??
 
-
 Use sound indicators while using voice and the rest of the app
 
-
 ## MVP
-Get the voice module with Gemini live api ready for communication and 
+
+Get the voice module with Gemini live api ready for communication and
 Frontend usibility should be able to:
 Farm section
-
 
 Check in section
 Assisstant usage
@@ -108,13 +102,11 @@ Assumptions
 Access to a Smartphone with moderate 3G/4G internet connectivity
 Able to receive mobile notifications
 
-
 Core Functionality
 Voice-First Interface: Full interaction in native languages like Kannada, breaking literacy barriers.
 Smart Farm Dashboard: A "digital twin" of your farm with real-time status and an AI-generated to-do list.
 Proactive Health Monitoring: AI-powered predictive alerts for pests and diseases based on weather and crop cycle.
 "Should I Sell Today?" Analysis: Nuanced market advice that analyzes price trends to suggest the most profitable time to sell.
-
 
 Automated Scheme Discovery: Proactively identifies and simplifies relevant government subsidies for the farmer.
 Smart Price Alerts: Set a target price for your crop and receive notifications when the market reaches it.
@@ -122,8 +114,6 @@ Smart Price Alerts: Set a target price for your crop and receive notifications w
 Functional Requirements
 Non-Functional Requirements
 Wireframes & User Flows
-
-
 
 Perfect! Here's a robust yet simple database schema and feature plan for your 5-hour hackathon build:
 
@@ -264,26 +254,31 @@ CREATE TABLE crop_recommendations (
 ## **5-Hour Build Priority Features**
 
 ### **Hour 1: Core Setup**
+
 - FastAPI setup with SQLite
 - User registration/login endpoints
 - Basic farm creation
 
 ### **Hour 2: Farm Management**
+
 - Farm CRUD operations
 - Daily log creation
 - Image upload for crop issues
 
 ### **Hour 3: Smart Features**
+
 - Weather API integration
 - Auto-generate TODO tasks based on weather
 - Basic sales tracking
 
 ### **Hour 4: AI Chat Integration**
+
 - Chat endpoint with database access
 - Simple query responses
 - Weather-based recommendations
 
 ### **Hour 5: Dashboard & Demo Prep**
+
 - Simple frontend/dashboard
 - Historical data views
 - Demo data seeding
@@ -324,6 +319,7 @@ GET /schemes/applicable # Government schemes for user's location
 ## **Chat System Database Integration**
 
 The AI chat will have read access to all tables and write access to:
+
 - `todo_tasks` (create weather-based tasks)
 - `crop_recommendations` (suggest alternative crops)
 - `chat_history` (store conversations)
@@ -340,15 +336,17 @@ Want me to start creating the FastAPI code structure or would you like to refine
 Perfect! Here's the SQLAlchemy model structure for your FastAPI application:Now here's the database setup and Pydantic schemas:And here's the FastAPI routes structure to get you started:## **Quick Setup Instructions**
 
 ### **Required Dependencies**
+
 ```bash
 pip install fastapi uvicorn sqlalchemy bcrypt pyjwt python-multipart requests
 ```
 
 ### **File Structure**
+
 ```
 farm_app/
 ├── main.py          # Your FastAPI routes
-├── models.py        # SQLAlchemy models  
+├── models.py        # SQLAlchemy models
 ├── schemas.py       # Pydantic schemas
 ├── database.py      # Database config
 └── farm_management.db  # SQLite database (auto-created)
@@ -357,31 +355,37 @@ farm_app/
 ### **5-Hour Implementation Priority**
 
 **Hour 1: Core Setup**
+
 - Copy the models, schemas, and database files
 - Implement basic auth (register/login)
 - Test with `uvicorn main:app --reload`
 
 **Hour 2: Farm & Daily Logs**
+
 - Implement farm CRUD operations
 - Add daily log creation
 - Test farm creation and logging
 
 **Hour 3: TODOs & Weather**
+
 - Implement TODO CRUD
 - Add basic weather API integration
 - Create weather-based TODO generation
 
 **Hour 4: Sales & Basic AI Chat**
+
 - Add sales tracking
 - Implement simple chat endpoint
 - Create context-building functions
 
 **Hour 5: Government Schemes & Demo**
+
 - Seed government schemes data
 - Add crop recommendations
 - Create demo data and test scenarios
 
 ### **Key Features Ready to Demo**
+
 1. **Complete Farm Digitization** - All farm data in one place
 2. **Smart TODO Generation** - Weather-based task creation
 3. **Sales Tracking** - Revenue monitoring and forecasting
@@ -389,6 +393,7 @@ farm_app/
 5. **Government Scheme Discovery** - Location and crop-based recommendations
 
 ### **Demo Script Ideas**
+
 1. "Register farmer → Create farm → Log daily activity"
 2. "Weather changes → System creates TODO → Farmer completes task"
 3. "Record sales → Ask AI for profit analysis → Get recommendations"
@@ -407,8 +412,8 @@ from datetime import datetime, date
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = "users"
-    
+**tablename** = "users"
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
@@ -418,17 +423,16 @@ class User(Base):
     latitude = Column(REAL)
     longitude = Column(REAL)
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     farms = relationship("Farm", back_populates="owner")
     todos = relationship("TodoTask", back_populates="user")
     weather_history = relationship("WeatherHistory", back_populates="user")
     chat_history = relationship("ChatHistory", back_populates="user")
-    crop_recommendations = relationship("CropRecommendation", back_populates="user")
 
 class Farm(Base):
-    __tablename__ = "farms"
-    
+**tablename** = "farms"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     farm_name = Column(String, nullable=False)
@@ -441,7 +445,7 @@ class Farm(Base):
     crop_stage = Column(String, default="seedling")  # seedling, growing, flowering, harvesting
     health_status = Column(String, default="good")  # good, moderate, poor
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     owner = relationship("User", back_populates="farms")
     daily_logs = relationship("DailyLog", back_populates="farm")
@@ -449,8 +453,8 @@ class Farm(Base):
     sales = relationship("Sale", back_populates="farm")
 
 class DailyLog(Base):
-    __tablename__ = "daily_logs"
-    
+**tablename** = "daily_logs"
+
     id = Column(Integer, primary_key=True, index=True)
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=False)
     log_date = Column(Date, nullable=False, default=date.today)
@@ -465,13 +469,13 @@ class DailyLog(Base):
     image_path = Column(String)  # for crop/disease photos
     video_path = Column(String)
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     farm = relationship("Farm", back_populates="daily_logs")
 
 class TodoTask(Base):
-    __tablename__ = "todo_tasks"
-    
+**tablename** = "todo_tasks"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=True)  # NULL for general tasks
@@ -484,14 +488,14 @@ class TodoTask(Base):
     weather_triggered = Column(Boolean, default=False)
     completed_at = Column(DateTime)
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     user = relationship("User", back_populates="todos")
     farm = relationship("Farm", back_populates="todos")
 
 class Sale(Base):
-    __tablename__ = "sales"
-    
+**tablename** = "sales"
+
     id = Column(Integer, primary_key=True, index=True)
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=False)
     sale_date = Column(Date, nullable=False, default=date.today)
@@ -503,13 +507,13 @@ class Sale(Base):
     transportation_cost = Column(REAL)
     notes = Column(Text)
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     farm = relationship("Farm", back_populates="sales")
 
 class WeatherHistory(Base):
-    __tablename__ = "weather_history"
-    
+**tablename** = "weather_history"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     date = Column(Date, nullable=False, default=date.today)
@@ -520,13 +524,13 @@ class WeatherHistory(Base):
     alerts = Column(Text)  # JSON array of weather alerts
     recommended_actions = Column(Text)  # AI-generated suggestions
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     user = relationship("User", back_populates="weather_history")
 
 class ChatHistory(Base):
-    __tablename__ = "chat_history"
-    
+**tablename** = "chat_history"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     message = Column(Text, nullable=False)
@@ -534,12 +538,12 @@ class ChatHistory(Base):
     message_type = Column(String, default="general")  # general, farm_specific, weather, sales
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=True)
     created_at = Column(DateTime, default=func.now())
-    
+
     # Relationships
     user = relationship("User", back_populates="chat_history")
 
-
 # database.py
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base
@@ -547,234 +551,233 @@ from models import Base
 SQLALCHEMY_DATABASE_URL = "sqlite:///./farm_management.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}  # Only for SQLite
+SQLALCHEMY_DATABASE_URL,
+connect_args={"check_same_thread": False} # Only for SQLite
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create tables
+
 Base.metadata.create_all(bind=engine)
 
 # Dependency
+
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+db = SessionLocal()
+try:
+yield db
+finally:
+db.close()
 
 # schemas.py - Pydantic models for API
+
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, date
 from enum import Enum
 
 # User Schemas
+
 class UserCreate(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
-    phone: Optional[str] = None
-    location: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
+name: str
+email: EmailStr
+password: str
+phone: Optional[str] = None
+location: Optional[str] = None
+latitude: Optional[float] = None
+longitude: Optional[float] = None
 
 class UserResponse(BaseModel):
-    id: int
-    name: str
-    email: str
-    phone: Optional[str]
-    location: Optional[str]
-    created_at: datetime
-    
+id: int
+name: str
+email: str
+phone: Optional[str]
+location: Optional[str]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Farm Schemas
+
 class FarmCreate(BaseModel):
-    farm_name: str
-    crop_type: str
-    planting_date: Optional[date] = None
-    expected_harvest_date: Optional[date] = None
-    field_size_acres: Optional[float] = None
-    soil_type: Optional[str] = None
-    irrigation_method: Optional[str] = None
-    crop_stage: str = "seedling"
+farm_name: str
+crop_type: str
+planting_date: Optional[date] = None
+expected_harvest_date: Optional[date] = None
+field_size_acres: Optional[float] = None
+soil_type: Optional[str] = None
+irrigation_method: Optional[str] = None
+crop_stage: str = "seedling"
 
 class FarmResponse(BaseModel):
-    id: int
-    farm_name: str
-    crop_type: str
-    planting_date: Optional[date]
-    expected_harvest_date: Optional[date]
-    field_size_acres: Optional[float]
-    soil_type: Optional[str]
-    irrigation_method: Optional[str]
-    crop_stage: str
-    health_status: str
-    created_at: datetime
-    
+id: int
+farm_name: str
+crop_type: str
+planting_date: Optional[date]
+expected_harvest_date: Optional[date]
+field_size_acres: Optional[float]
+soil_type: Optional[str]
+irrigation_method: Optional[str]
+crop_stage: str
+health_status: str
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Daily Log Schemas
+
 class DailyLogCreate(BaseModel):
-    log_date: date = date.today()
-    activity_type: Optional[str] = None
-    notes: Optional[str] = None
-    weather_temp: Optional[float] = None
-    weather_humidity: Optional[float] = None
-    weather_rainfall: Optional[float] = None
-    weather_conditions: Optional[str] = None
-    crop_health_notes: Optional[str] = None
-    diseases_noted: Optional[str] = None
-    image_path: Optional[str] = None
-    video_path: Optional[str] = None
+log_date: date = date.today()
+activity_type: Optional[str] = None
+notes: Optional[str] = None
+weather_temp: Optional[float] = None
+weather_humidity: Optional[float] = None
+weather_rainfall: Optional[float] = None
+weather_conditions: Optional[str] = None
+crop_health_notes: Optional[str] = None
+diseases_noted: Optional[str] = None
+image_path: Optional[str] = None
+video_path: Optional[str] = None
 
 class DailyLogResponse(BaseModel):
-    id: int
-    farm_id: int
-    log_date: date
-    activity_type: Optional[str]
-    notes: Optional[str]
-    weather_temp: Optional[float]
-    weather_humidity: Optional[float]
-    weather_rainfall: Optional[float]
-    weather_conditions: Optional[str]
-    crop_health_notes: Optional[str]
-    diseases_noted: Optional[str]
-    image_path: Optional[str]
-    video_path: Optional[str]
-    created_at: datetime
-    
+id: int
+farm_id: int
+log_date: date
+activity_type: Optional[str]
+notes: Optional[str]
+weather_temp: Optional[float]
+weather_humidity: Optional[float]
+weather_rainfall: Optional[float]
+weather_conditions: Optional[str]
+crop_health_notes: Optional[str]
+diseases_noted: Optional[str]
+image_path: Optional[str]
+video_path: Optional[str]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # TODO Schemas
+
 class TodoCreate(BaseModel):
-    task_title: str
-    task_description: Optional[str] = None
-    priority: str = "medium"
-    due_date: Optional[date] = None
-    farm_id: Optional[int] = None
+task_title: str
+task_description: Optional[str] = None
+priority: str = "medium"
+due_date: Optional[date] = None
+farm_id: Optional[int] = None
 
 class TodoResponse(BaseModel):
-    id: int
-    task_title: str
-    task_description: Optional[str]
-    priority: str
-    status: str
-    due_date: Optional[date]
-    farm_id: Optional[int]
-    is_system_generated: bool
-    weather_triggered: bool
-    completed_at: Optional[datetime]
-    created_at: datetime
-    
+id: int
+task_title: str
+task_description: Optional[str]
+priority: str
+status: str
+due_date: Optional[date]
+farm_id: Optional[int]
+is_system_generated: bool
+weather_triggered: bool
+completed_at: Optional[datetime]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Sales Schemas
+
 class SaleCreate(BaseModel):
-    sale_date: date = date.today()
-    crop_type: Optional[str] = None
-    quantity_kg: Optional[float] = None
-    price_per_kg: Optional[float] = None
-    total_amount: Optional[float] = None
-    buyer_type: Optional[str] = None
-    transportation_cost: Optional[float] = None
-    notes: Optional[str] = None
+sale_date: date = date.today()
+crop_type: Optional[str] = None
+quantity_kg: Optional[float] = None
+price_per_kg: Optional[float] = None
+total_amount: Optional[float] = None
+buyer_type: Optional[str] = None
+transportation_cost: Optional[float] = None
+notes: Optional[str] = None
 
 class SaleResponse(BaseModel):
-    id: int
-    farm_id: int
-    sale_date: date
-    crop_type: Optional[str]
-    quantity_kg: Optional[float]
-    price_per_kg: Optional[float]
-    total_amount: Optional[float]
-    buyer_type: Optional[str]
-    transportation_cost: Optional[float]
-    notes: Optional[str]
-    created_at: datetime
-    
+id: int
+farm_id: int
+sale_date: date
+crop_type: Optional[str]
+quantity_kg: Optional[float]
+price_per_kg: Optional[float]
+total_amount: Optional[float]
+buyer_type: Optional[str]
+transportation_cost: Optional[float]
+notes: Optional[str]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Chat Schemas
+
 class ChatMessage(BaseModel):
-    message: str
-    farm_id: Optional[int] = None
+message: str
+farm_id: Optional[int] = None
 
 class ChatResponse(BaseModel):
-    id: int
-    message: str
-    response: str
-    message_type: str
-    farm_id: Optional[int]
-    created_at: datetime
-    
+id: int
+message: str
+response: str
+message_type: str
+farm_id: Optional[int]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Weather Schemas
+
 class WeatherResponse(BaseModel):
-    id: int
-    date: date
-    temperature: Optional[float]
-    humidity: Optional[float]
-    rainfall: Optional[float]
-    conditions: Optional[str]
-    alerts: Optional[str]
-    recommended_actions: Optional[str]
-    created_at: datetime
-    
+id: int
+date: date
+temperature: Optional[float]
+humidity: Optional[float]
+rainfall: Optional[float]
+conditions: Optional[str]
+alerts: Optional[str]
+recommended_actions: Optional[str]
+created_at: datetime
+
     class Config:
         from_attributes = True
 
 # Government Scheme Schemas
-class GovernmentSchemeResponse(BaseModel):
-    id: int
-    scheme_name: str
-    description: Optional[str]
-    eligibility_criteria: Optional[str]
-    application_link: Optional[str]
-    crop_types: Optional[str]
-    location_applicable: Optional[str]
-    deadline: Optional[date]
-    benefit_amount: Optional[str]
-    is_active: bool
-    
-    class Config:
-        from_attributes = True
 
-# Crop Recommendation Schemas
-class CropRecommendationResponse(BaseModel):
-    id: int
-    recommended_crop: Optional[str]
-    current_crop: Optional[str]
-    reason: Optional[str]
-    expected_profit_increase: Optional[float]
-    seasonal_suitability: Optional[str]
-    market_demand: Optional[str]
-    created_at: datetime
-    
+class GovernmentSchemeResponse(BaseModel):
+id: int
+scheme_name: str
+description: Optional[str]
+eligibility_criteria: Optional[str]
+application_link: Optional[str]
+crop_types: Optional[str]
+location_applicable: Optional[str]
+deadline: Optional[date]
+benefit_amount: Optional[str]
+is_active: bool
+
     class Config:
         from_attributes = True
 
 # Authentication Schemas
+
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+access_token: str
+token_type: str
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+email: Optional[str] = None
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+email: EmailStr
+password: str
 
 # main.py
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -786,51 +789,53 @@ import requests
 import json
 
 from database import get_db
-from models import *
-from schemas import *
+from models import _
+from schemas import _
 
 app = FastAPI(title="Farm Management API", version="1.0.0")
 security = HTTPBearer()
 
 # JWT Configuration
-SECRET_KEY = "your-secret-key-here"  # Change this in production
+
+SECRET_KEY = "your-secret-key-here" # Change this in production
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Helper Functions
+
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+to_encode = data.copy()
+expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+to_encode.update({"exp": expire})
+return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication")
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication")
-    
+try:
+payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+email: str = payload.get("sub")
+if email is None:
+raise HTTPException(status_code=401, detail="Invalid authentication")
+except jwt.PyJWTError:
+raise HTTPException(status_code=401, detail="Invalid authentication")
+
     user = db.query(User).filter(User.email == email).first()
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
 # Authentication Routes
+
 @app.post("/auth/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if user exists
-    if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
+def register(user: UserCreate, db: Session = Depends(get_db)): # Check if user exists
+if db.query(User).filter(User.email == user.email).first():
+raise HTTPException(status_code=400, detail="Email already registered")
+
     # Create user
     hashed_password = hash_password(user.password)
     db_user = User(
@@ -849,55 +854,55 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/auth/login", response_model=Token)
 def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == user_credentials.email).first()
-    
+user = db.query(User).filter(User.email == user_credentials.email).first()
+
     if not user or not verify_password(user_credentials.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
+
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Farm Routes
+
 @app.get("/farms/", response_model=List[FarmResponse])
 def get_farms(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(Farm).filter(Farm.user_id == current_user.id).all()
+return db.query(Farm).filter(Farm.user_id == current_user.id).all()
 
 @app.post("/farms/", response_model=FarmResponse)
 def create_farm(farm: FarmCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    db_farm = Farm(**farm.dict(), user_id=current_user.id)
-    db.add(db_farm)
-    db.commit()
-    db.refresh(db_farm)
-    
+db_farm = Farm(\*\*farm.dict(), user_id=current_user.id)
+db.add(db_farm)
+db.commit()
+db.refresh(db_farm)
+
     # Generate initial TODO tasks for new farm
     generate_initial_todos(db_farm, db)
-    
+
     return db_farm
 
 @app.get("/farms/{farm_id}", response_model=FarmResponse)
 def get_farm(farm_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
-    if not farm:
-        raise HTTPException(status_code=404, detail="Farm not found")
-    return farm
+farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
+if not farm:
+raise HTTPException(status_code=404, detail="Farm not found")
+return farm
 
 # Daily Logs Routes
+
 @app.get("/farms/{farm_id}/logs", response_model=List[DailyLogResponse])
-def get_daily_logs(farm_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Verify farm ownership
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
-    if not farm:
-        raise HTTPException(status_code=404, detail="Farm not found")
-    
+def get_daily_logs(farm_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Verify farm ownership
+farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
+if not farm:
+raise HTTPException(status_code=404, detail="Farm not found")
+
     return db.query(DailyLog).filter(DailyLog.farm_id == farm_id).order_by(DailyLog.log_date.desc()).all()
 
 @app.post("/farms/{farm_id}/logs", response_model=DailyLogResponse)
-def create_daily_log(farm_id: int, log: DailyLogCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Verify farm ownership
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
-    if not farm:
-        raise HTTPException(status_code=404, detail="Farm not found")
-    
+def create_daily_log(farm_id: int, log: DailyLogCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Verify farm ownership
+farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
+if not farm:
+raise HTTPException(status_code=404, detail="Farm not found")
+
     db_log = DailyLog(**log.dict(), farm_id=farm_id)
     db.add(db_log)
     db.commit()
@@ -905,24 +910,25 @@ def create_daily_log(farm_id: int, log: DailyLogCreate, current_user: User = Dep
     return db_log
 
 # TODO Routes
+
 @app.get("/todos/", response_model=List[TodoResponse])
 def get_todos(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(TodoTask).filter(TodoTask.user_id == current_user.id).order_by(TodoTask.due_date).all()
+return db.query(TodoTask).filter(TodoTask.user_id == current_user.id).order_by(TodoTask.due_date).all()
 
 @app.post("/todos/", response_model=TodoResponse)
 def create_todo(todo: TodoCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    db_todo = TodoTask(**todo.dict(), user_id=current_user.id)
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    return db_todo
+db_todo = TodoTask(\*\*todo.dict(), user_id=current_user.id)
+db.add(db_todo)
+db.commit()
+db.refresh(db_todo)
+return db_todo
 
 @app.put("/todos/{todo_id}/complete", response_model=TodoResponse)
 def complete_todo(todo_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    todo = db.query(TodoTask).filter(TodoTask.id == todo_id, TodoTask.user_id == current_user.id).first()
-    if not todo:
-        raise HTTPException(status_code=404, detail="TODO not found")
-    
+todo = db.query(TodoTask).filter(TodoTask.id == todo_id, TodoTask.user_id == current_user.id).first()
+if not todo:
+raise HTTPException(status_code=404, detail="TODO not found")
+
     todo.status = "completed"
     todo.completed_at = datetime.utcnow()
     db.commit()
@@ -930,22 +936,21 @@ def complete_todo(todo_id: int, current_user: User = Depends(get_current_user), 
     return todo
 
 # Sales Routes
+
 @app.get("/farms/{farm_id}/sales", response_model=List[SaleResponse])
-def get_sales(farm_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Verify farm ownership
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
-    if not farm:
-        raise HTTPException(status_code=404, detail="Farm not found")
-    
+def get_sales(farm_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Verify farm ownership
+farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
+if not farm:
+raise HTTPException(status_code=404, detail="Farm not found")
+
     return db.query(Sale).filter(Sale.farm_id == farm_id).order_by(Sale.sale_date.desc()).all()
 
 @app.post("/farms/{farm_id}/sales", response_model=SaleResponse)
-def create_sale(farm_id: int, sale: SaleCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Verify farm ownership
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
-    if not farm:
-        raise HTTPException(status_code=404, detail="Farm not found")
-    
+def create_sale(farm_id: int, sale: SaleCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Verify farm ownership
+farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == current_user.id).first()
+if not farm:
+raise HTTPException(status_code=404, detail="Farm not found")
+
     db_sale = Sale(**sale.dict(), farm_id=farm_id)
     db.add(db_sale)
     db.commit()
@@ -953,14 +958,15 @@ def create_sale(farm_id: int, sale: SaleCreate, current_user: User = Depends(get
     return db_sale
 
 # Weather Routes
+
 @app.get("/weather/current")
 def get_current_weather(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if not current_user.latitude or not current_user.longitude:
-        raise HTTPException(status_code=400, detail="User location not available")
-    
+if not current_user.latitude or not current_user.longitude:
+raise HTTPException(status_code=400, detail="User location not available")
+
     # Google Weather API call (you'll need to implement this)
     weather_data = fetch_weather_data(current_user.latitude, current_user.longitude)
-    
+
     # Store in database
     db_weather = WeatherHistory(
         user_id=current_user.id,
@@ -972,21 +978,21 @@ def get_current_weather(current_user: User = Depends(get_current_user), db: Sess
     )
     db.add(db_weather)
     db.commit()
-    
+
     # Generate weather-based TODO tasks
     create_weather_todos(current_user, weather_data, db)
-    
+
     return weather_data
 
 # Chat Routes
+
 @app.post("/chat", response_model=ChatResponse)
-def chat_with_ai(chat: ChatMessage, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Get relevant data for context
-    context = build_chat_context(current_user, chat.farm_id, db)
-    
+def chat_with_ai(chat: ChatMessage, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Get relevant data for context
+context = build_chat_context(current_user, chat.farm_id, db)
+
     # Generate AI response (you'll implement this)
     ai_response = generate_ai_response(chat.message, context)
-    
+
     # Store chat history
     db_chat = ChatHistory(
         user_id=current_user.id,
@@ -998,73 +1004,70 @@ def chat_with_ai(chat: ChatMessage, current_user: User = Depends(get_current_use
     db.add(db_chat)
     db.commit()
     db.refresh(db_chat)
-    
+
     return db_chat
 
 @app.get("/chat/history", response_model=List[ChatResponse])
 def get_chat_history(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(ChatHistory).filter(ChatHistory.user_id == current_user.id).order_by(ChatHistory.created_at.desc()).limit(50).all()
+return db.query(ChatHistory).filter(ChatHistory.user_id == current_user.id).order_by(ChatHistory.created_at.desc()).limit(50).all()
 
 # Government Schemes Routes
+
 @app.get("/schemes/applicable", response_model=List[GovernmentSchemeResponse])
-def get_applicable_schemes(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Get user's crops
-    user_crops = db.query(Farm.crop_type).filter(Farm.user_id == current_user.id).distinct().all()
-    crop_types = [crop[0] for crop in user_crops]
-    
+def get_applicable_schemes(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Get user's crops
+user_crops = db.query(Farm.crop_type).filter(Farm.user_id == current_user.id).distinct().all()
+crop_types = [crop[0] for crop in user_crops]
+
     # Find applicable schemes (simplified logic for hackathon)
     schemes = db.query(GovernmentScheme).filter(
         GovernmentScheme.is_active == True,
         GovernmentScheme.location_applicable.contains(current_user.location or "")
     ).all()
-    
+
     return schemes
 
-# Crop Recommendations Routes
-@app.get("/recommendations/crops", response_model=List[CropRecommendationResponse])
-def get_crop_recommendations(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(CropRecommendation).filter(CropRecommendation.user_id == current_user.id).order_by(CropRecommendation.created_at.desc()).all()
-
 # Helper Functions (you'll implement these)
+
 def generate_initial_todos(farm: Farm, db: Session):
-    """Generate initial TODO tasks for a new farm"""
-    pass
+"""Generate initial TODO tasks for a new farm"""
+pass
 
 def fetch_weather_data(lat: float, lon: float):
-    """Fetch weather data from Google Weather API"""
-    pass
+"""Fetch weather data from Google Weather API"""
+pass
 
 def generate_weather_recommendations(weather_data: dict):
-    """Generate recommendations based on weather"""
-    pass
+"""Generate recommendations based on weather"""
+pass
 
 def create_weather_todos(user: User, weather_data: dict, db: Session):
-    """Create weather-based TODO tasks"""
-    pass
+"""Create weather-based TODO tasks"""
+pass
 
 def build_chat_context(user: User, farm_id: Optional[int], db: Session):
-    """Build context for AI chat"""
-    pass
+"""Build context for AI chat"""
+pass
 
 def generate_ai_response(message: str, context: dict):
-    """Generate AI response using context"""
-    pass
+"""Generate AI response using context"""
+pass
 
 def determine_message_type(message: str):
-    """Determine the type of chat message"""
-    return "general"
+"""Determine the type of chat message"""
+return "general"
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+if **name** == "**main**":
+import uvicorn
+uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # Enhanced TodoTask model with recurring support
+
 from sqlalchemy import Boolean, Column, Integer, String, Text, REAL, DateTime, Date, ForeignKey
 from sqlalchemy.orm import relationship
 
 class TodoTask(Base):
-    __tablename__ = "todo_tasks"
-    
+**tablename** = "todo_tasks"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=True)
@@ -1077,7 +1080,7 @@ class TodoTask(Base):
     weather_triggered = Column(Boolean, default=False)
     completed_at = Column(DateTime)
     created_at = Column(DateTime, default=func.now())
-    
+
     # NEW: Recurring fields
     is_recurring = Column(Boolean, default=False)
     recurrence_pattern = Column(String)  # 'daily', 'weekly', 'monthly', 'seasonal'
@@ -1085,74 +1088,76 @@ class TodoTask(Base):
     parent_todo_id = Column(Integer, ForeignKey("todo_tasks.id"), nullable=True)  # Links to original template
     next_due_date = Column(Date)  # When to create next instance
     is_template = Column(Boolean, default=False)  # Original recurring template
-    
+
     # Relationships
     user = relationship("User", back_populates="todos")
     farm = relationship("Farm", back_populates="todos")
     recurring_instances = relationship("TodoTask", cascade="all, delete-orphan")
 
 # Enhanced Pydantic schemas
+
 class TodoCreate(BaseModel):
-    task_title: str
-    task_description: Optional[str] = None
-    priority: str = "medium"
-    due_date: Optional[date] = None
-    farm_id: Optional[int] = None
-    
+task_title: str
+task_description: Optional[str] = None
+priority: str = "medium"
+due_date: Optional[date] = None
+farm_id: Optional[int] = None
+
     # NEW: Recurring fields
     is_recurring: bool = False
     recurrence_pattern: Optional[str] = None  # 'daily', 'weekly', 'monthly'
     recurrence_interval: int = 1
 
 class TodoResponse(BaseModel):
-    id: int
-    task_title: str
-    task_description: Optional[str]
-    priority: str
-    status: str
-    due_date: Optional[date]
-    farm_id: Optional[int]
-    is_system_generated: bool
-    weather_triggered: bool
-    completed_at: Optional[datetime]
-    created_at: datetime
-    
+id: int
+task_title: str
+task_description: Optional[str]
+priority: str
+status: str
+due_date: Optional[date]
+farm_id: Optional[int]
+is_system_generated: bool
+weather_triggered: bool
+completed_at: Optional[datetime]
+created_at: datetime
+
     # NEW: Recurring fields
     is_recurring: bool
     recurrence_pattern: Optional[str]
     recurrence_interval: int
     is_template: bool
     next_due_date: Optional[date]
-    
+
     class Config:
         from_attributes = True
 
 # Enhanced TODO creation with recurring support
+
 @app.post("/todos/", response_model=TodoResponse)
-def create_todo(todo: TodoCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Create the main TODO
-    db_todo = TodoTask(**todo.dict(), user_id=current_user.id)
-    
+def create_todo(todo: TodoCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)): # Create the main TODO
+db_todo = TodoTask(\*\*todo.dict(), user_id=current_user.id)
+
     if todo.is_recurring:
         db_todo.is_template = True
         db_todo.next_due_date = calculate_next_due_date(todo.due_date, todo.recurrence_pattern, todo.recurrence_interval)
-    
+
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
-    
+
     # If recurring, create first instance
     if todo.is_recurring:
         create_recurring_instance(db_todo, db)
-    
+
     return db_todo
 
 # Helper functions for recurring TODOs
+
 def calculate_next_due_date(current_date: date, pattern: str, interval: int) -> date:
-    """Calculate when the next recurring task should be created"""
-    if not current_date:
-        current_date = date.today()
-    
+"""Calculate when the next recurring task should be created"""
+if not current_date:
+current_date = date.today()
+
     if pattern == "daily":
         return current_date + timedelta(days=interval)
     elif pattern == "weekly":
@@ -1167,89 +1172,91 @@ def calculate_next_due_date(current_date: date, pattern: str, interval: int) -> 
         return current_date + timedelta(days=1)
 
 def create_recurring_instance(template: TodoTask, db: Session):
-    """Create a new instance of a recurring task"""
-    instance = TodoTask(
-        user_id=template.user_id,
-        farm_id=template.farm_id,
-        task_title=template.task_title,
-        task_description=template.task_description,
-        priority=template.priority,
-        due_date=template.due_date,
-        is_system_generated=True,
-        parent_todo_id=template.id,
-        is_recurring=False,  # Instances are not recurring themselves
-        is_template=False
-    )
-    db.add(instance)
-    db.commit()
+"""Create a new instance of a recurring task"""
+instance = TodoTask(
+user_id=template.user_id,
+farm_id=template.farm_id,
+task_title=template.task_title,
+task_description=template.task_description,
+priority=template.priority,
+due_date=template.due_date,
+is_system_generated=True,
+parent_todo_id=template.id,
+is_recurring=False, # Instances are not recurring themselves
+is_template=False
+)
+db.add(instance)
+db.commit()
 
 # Background job to create recurring tasks (run this daily)
+
 def create_pending_recurring_todos(db: Session):
-    """Create new instances of recurring TODOs that are due"""
-    today = date.today()
-    
+"""Create new instances of recurring TODOs that are due"""
+today = date.today()
+
     # Find all recurring templates that need new instances
     recurring_templates = db.query(TodoTask).filter(
         TodoTask.is_template == True,
         TodoTask.is_recurring == True,
         TodoTask.next_due_date <= today
     ).all()
-    
+
     for template in recurring_templates:
         # Create new instance
         create_recurring_instance(template, db)
-        
+
         # Update next due date
         template.next_due_date = calculate_next_due_date(
-            template.next_due_date, 
-            template.recurrence_pattern, 
+            template.next_due_date,
+            template.recurrence_pattern,
             template.recurrence_interval
         )
-        
+
     db.commit()
 
 # Endpoint to trigger recurring TODO creation (for demo)
+
 @app.post("/todos/generate-recurring")
 def generate_recurring_todos(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Manually trigger creation of pending recurring TODOs"""
-    create_pending_recurring_todos(db)
-    return {"message": "Recurring TODOs generated successfully"}
+"""Manually trigger creation of pending recurring TODOs"""
+create_pending_recurring_todos(db)
+return {"message": "Recurring TODOs generated successfully"}
 
 # Get pending TODOs with recurring status
+
 @app.get("/todos/active", response_model=List[TodoResponse])
 def get_active_todos(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Get only active TODO instances (not templates)"""
-    return db.query(TodoTask).filter(
-        TodoTask.user_id == current_user.id,
-        TodoTask.status == "pending",
-        TodoTask.is_template == False  # Only get instances, not templates
-    ).order_by(TodoTask.due_date).all()
+"""Get only active TODO instances (not templates)"""
+return db.query(TodoTask).filter(
+TodoTask.user_id == current_user.id,
+TodoTask.status == "pending",
+TodoTask.is_template == False # Only get instances, not templates
+).order_by(TodoTask.due_date).all()
 
 # Complete recurring TODO and create next instance if needed
+
 @app.put("/todos/{todo_id}/complete", response_model=TodoResponse)
 def complete_todo(todo_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    todo = db.query(TodoTask).filter(TodoTask.id == todo_id, TodoTask.user_id == current_user.id).first()
-    if not todo:
-        raise HTTPException(status_code=404, detail="TODO not found")
-    
+todo = db.query(TodoTask).filter(TodoTask.id == todo_id, TodoTask.user_id == current_user.id).first()
+if not todo:
+raise HTTPException(status_code=404, detail="TODO not found")
+
     todo.status = "completed"
     todo.completed_at = datetime.utcnow()
-    
+
     # If this was from a recurring template, check if we need to create next instance
     if todo.parent_todo_id:
         template = db.query(TodoTask).filter(TodoTask.id == todo.parent_todo_id).first()
         if template and template.is_recurring:
             # Update template's next due date
             template.next_due_date = calculate_next_due_date(
-                todo.due_date, 
-                template.recurrence_pattern, 
+                todo.due_date,
+                template.recurrence_pattern,
                 template.recurrence_interval
             )
-    
+
     db.commit()
     db.refresh(todo)
     return todo
-
-
 
 REMEBER THIS IS A HACKTHON AND IT SHOULD BE BUILT WITHIN 5 HOURS AND YOU ARE WITH WORLDS FASTEST SOFTWARE DEVELOPER

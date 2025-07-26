@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class SaleCreate(BaseModel):
     """Schema for creating a sale record."""
+
     sale_date: date = Field(default_factory=lambda: date.today())
     crop_type: Optional[str] = Field(None, max_length=50)
     crop_variety: Optional[str] = Field(None, max_length=50)
@@ -17,7 +18,9 @@ class SaleCreate(BaseModel):
     buyer_type: Optional[str] = Field(None, max_length=50)
     buyer_contact: Optional[str] = Field(None, max_length=50)
     payment_method: Optional[str] = Field(None, max_length=50)
-    payment_status: str = Field(default="pending", pattern="^(pending|completed|partial)$")
+    payment_status: str = Field(
+        default="pending", pattern="^(pending|completed|partial)$"
+    )
     transportation_cost: Optional[float] = Field(None, ge=0)
     commission_paid: Optional[float] = Field(None, ge=0)
     quality_grade: Optional[str] = Field(None, max_length=10)
@@ -30,6 +33,7 @@ class SaleCreate(BaseModel):
 
 class SaleUpdate(BaseModel):
     """Schema for updating a sale record."""
+
     crop_type: Optional[str] = Field(None, max_length=50)
     crop_variety: Optional[str] = Field(None, max_length=50)
     quantity_kg: Optional[float] = Field(None, gt=0)
@@ -52,6 +56,7 @@ class SaleUpdate(BaseModel):
 
 class SaleResponse(BaseModel):
     """Schema for sale response."""
+
     id: int
     farm_id: int
     sale_date: date
@@ -75,6 +80,6 @@ class SaleResponse(BaseModel):
     invoice_number: Optional[str]
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True

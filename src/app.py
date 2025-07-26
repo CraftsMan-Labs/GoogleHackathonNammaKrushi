@@ -3,9 +3,9 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .app.api import auth, farms, daily_logs, todos, sales, chat, weather
-from .app.config.database import create_tables
-from .app.config.settings import settings
+from app.api import auth, farms, daily_logs, todos, sales, chat, weather
+from app.config.database import create_tables
+from app.config.settings import settings
 
 # Create database tables
 create_tables()
@@ -15,7 +15,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     description="AI-powered farming assistant for Karnataka farmers",
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
 )
 
 # Add CORS middleware
@@ -43,7 +43,7 @@ def read_root() -> dict[str, str]:
     return {
         "message": f"Welcome to {settings.APP_NAME} API",
         "version": settings.VERSION,
-        "docs": "/docs"
+        "docs": "/docs",
     }
 
 

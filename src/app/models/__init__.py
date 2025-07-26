@@ -5,17 +5,13 @@ from .todo import TodoTask
 from .sale import Sale
 from .weather import WeatherHistory
 from .chat import ChatHistory
-from .government_scheme import GovernmentScheme
-from .crop_recommendation import CropRecommendation
 
 __all__ = [
     "User",
-    "Farm", 
+    "Farm",
     "DailyLog",
     "TodoTask",
     "Sale",
     "WeatherHistory",
     "ChatHistory",
-    "GovernmentScheme",
-    "CropRecommendation",
 ]

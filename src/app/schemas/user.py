@@ -7,6 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 class UserCreate(BaseModel):
     """Schema for creating a new user."""
+
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=6)
@@ -20,6 +21,7 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
     """Schema for updating user information."""
+
     name: Optional[str] = Field(None, min_length=2, max_length=100)
     phone: Optional[str] = Field(None, max_length=15)
     location: Optional[str] = Field(None, max_length=100)
@@ -31,6 +33,7 @@ class UserUpdate(BaseModel):
 
 class UserResponse(BaseModel):
     """Schema for user response."""
+
     id: int
     name: str
     email: str
@@ -41,12 +44,13 @@ class UserResponse(BaseModel):
     latitude: Optional[float]
     longitude: Optional[float]
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
 
 class UserLogin(BaseModel):
     """Schema for user login."""
+
     email: EmailStr
     password: str

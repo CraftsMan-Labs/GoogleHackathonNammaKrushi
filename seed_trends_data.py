@@ -283,7 +283,7 @@ def get_price_trend() -> str:
 
 def create_database_and_tables():
     """Create database and tables if they don't exist"""
-    conn = sqlite3.connect("namma_krushi.db")
+    conn = sqlite3.connect("src/namma_krushi.db")
     cursor = conn.cursor()
 
     # Create consumer_prices table
@@ -359,7 +359,7 @@ def create_database_and_tables():
 
 def generate_consumer_price_data():
     """Generate consumer price data for the last 3 months"""
-    conn = sqlite3.connect("namma_krushi.db")
+    conn = sqlite3.connect("src/namma_krushi.db")
     cursor = conn.cursor()
 
     # Clear existing data
@@ -450,7 +450,7 @@ def generate_consumer_price_data():
 
 def generate_farmer_price_data():
     """Generate farmer price data for the last 3 months"""
-    conn = sqlite3.connect("namma_krushi.db")
+    conn = sqlite3.connect("src/namma_krushi.db")
     cursor = conn.cursor()
 
     # Clear existing data
@@ -531,7 +531,7 @@ def generate_farmer_price_data():
 
 def generate_summary_stats():
     """Generate and display summary statistics"""
-    conn = sqlite3.connect("namma_krushi.db")
+    conn = sqlite3.connect("src/namma_krushi.db")
     cursor = conn.cursor()
 
     print("\n=== SUMMARY STATISTICS ===")

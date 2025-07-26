@@ -8,6 +8,16 @@ import logging
 from typing import Dict, Any, List, Callable
 
 from .search import google_search, SEARCH_TOOL_DECLARATION
+from .exa_search import (
+    exa_search,
+    exa_search_agricultural,
+    EXA_SEARCH_TOOL_DECLARATION,
+    EXA_AGRICULTURAL_SEARCH_TOOL_DECLARATION,
+)
+from .scheme_search import (
+    search_government_schemes,
+    SCHEME_SEARCH_TOOL_DECLARATION,
+)
 from .weather import (
     get_weather_by_location,
     get_weather_by_coordinates,
@@ -56,6 +66,17 @@ class ToolRegistry:
         """Register all available tools."""
         # Search tools
         self.register_tool("google_search", google_search, SEARCH_TOOL_DECLARATION)
+        self.register_tool("exa_search", exa_search, EXA_SEARCH_TOOL_DECLARATION)
+        self.register_tool(
+            "exa_search_agricultural",
+            exa_search_agricultural,
+            EXA_AGRICULTURAL_SEARCH_TOOL_DECLARATION,
+        )
+        self.register_tool(
+            "search_government_schemes",
+            search_government_schemes,
+            SCHEME_SEARCH_TOOL_DECLARATION,
+        )
 
         # Weather tools
         self.register_tool(
@@ -211,6 +232,22 @@ async def handle_function_call(function_call) -> Dict[str, Any]:
         # Call the appropriate tool function
         if function_name == "google_search":
             result = await tool_function(args.get("query", ""))
+        elif function_name == "exa_search":
+            result = tool_function(
+                query=args.get("query", ""),
+                num_results=args.get("num_results", 10),
+                include_domains=args.get("include_domains"),
+                exclude_domains=args.get("exclude_domains"),
+                use_autoprompt=args.get("use_autoprompt", True),
+                include_text=args.get("include_text", True),
+                include_highlights=args.get("include_highlights", True),
+            )
+        elif function_name == "exa_search_agricultural":
+            result = tool_function(args.get("query", ""))
+        elif function_name == "search_government_schemes":
+            result = await tool_function(
+                query=args.get("query", ""), max_results=args.get("max_results", 10)
+            )
         elif function_name == "analyze_crop_image_and_search":
             result = await tool_function(
                 args.get("image_input", ""),
@@ -418,15 +455,29 @@ def get_system_instruction() -> str:
     Returns:
         str: System instruction text
     """
-    return """You are an expert agricultural assistant with access to Google Search, Weather, and Soil Data APIs. 
+    return """You are an expert agricultural assistant with access to Google Search, Exa AI Search, Government Scheme Search, Weather, and Soil Data APIs. 
     You can help farmers with:
     - Crop disease identification and treatment recommendations
     - Weather information for farming decisions
     - Soil property analysis for crop planning
+    - Government scheme and subsidy information
     - General agricultural research and advice
+    - Advanced research using AI-powered search with content extraction
+    
+    Search Tools Available:
+    - google_search: Traditional Google search for general queries
+    - exa_search: Advanced AI-powered search with content extraction and highlights
+    - exa_search_agricultural: Specialized search optimized for agricultural content from trusted sources
+    - search_government_schemes: AI-powered search for government schemes, subsidies, and programs with structured output
+    
+    When users ask about government schemes, subsidies, or financial assistance, use the search_government_schemes tool 
+    to provide accurate, up-to-date information about available programs.
     
     When users provide images of crops, analyze them for diseases and provide actionable recommendations.
     Always provide practical, evidence-based advice. Be concise but thorough in your responses.
+    
+    For research queries, prefer exa_search_agricultural for agricultural topics as it provides more comprehensive 
+    content with highlights and focuses on trusted agricultural sources.
     
     When speaking (in voice mode), use a friendly, knowledgeable tone and speak clearly. 
     Avoid overly technical jargon when possible, but be precise about agricultural recommendations."""

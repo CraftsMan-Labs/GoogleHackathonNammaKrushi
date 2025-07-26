@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     OPENWEATHER_API_KEY: Optional[str] = os.getenv("OPENWEATHER_API_KEY")
     WEATHER_API_URL: str = "https://api.openweathermap.org/data/2.5"
 
+    # Exa AI Search API
+    EXA_API_KEY: Optional[str] = os.getenv("EXA_API_KEY")
+    EXA_API_URL: str = "https://api.exa.ai"
+
     # Voice Settings
     SPEECH_LANGUAGE_CODE: str = "kn-IN"  # Kannada
     VOICE_NAME: str = "kn-IN-Standard-A"

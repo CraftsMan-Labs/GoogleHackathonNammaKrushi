@@ -58,6 +58,6 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "app:app",
-        reload=settings.DEBUG,
+        reload=False,
         log_level="info",
     )

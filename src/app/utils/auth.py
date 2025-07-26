@@ -86,3 +86,37 @@ def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
     if not verify_password(password, user.password_hash):
         return None
     return user
+
+
+def get_user_from_token(token: str, db: Session) -> Optional[User]:
+    """Get user from JWT token without raising exceptions."""
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+
+        user = db.query(User).filter(User.email == email).first()
+        return user
+    except JWTError:
+        return None
+
+
+def extract_token_from_websocket(websocket) -> Optional[str]:
+    """Extract JWT token from WebSocket connection."""
+    try:
+        # Try to get token from query parameters
+        if hasattr(websocket, "query_params") and "token" in websocket.query_params:
+            return websocket.query_params["token"]
+
+        # Try to get token from headers
+        if hasattr(websocket, "headers"):
+            auth_header = websocket.headers.get("authorization")
+            if auth_header and auth_header.startswith("Bearer "):
+                return auth_header[7:]  # Remove 'Bearer ' prefix
+
+        return None
+    except Exception:
+        return None

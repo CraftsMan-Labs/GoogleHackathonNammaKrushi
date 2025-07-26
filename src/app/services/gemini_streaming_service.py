@@ -1,56 +1,38 @@
 """
-Gemini Live Service for Real-time Agricultural Assistant
+Gemini HTTP Streaming Service for Real-time Agricultural Assistant
 
-Provides real-time streaming AI assistance using Google's Gemini Live API
-with integrated agricultural tools.
+Provides real-time streaming AI assistance using HTTP Server-Sent Events (SSE)
+with JWT authentication and integrated agricultural tools.
 """
 
 import asyncio
 import logging
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, AsyncGenerator
 from google import genai
 from google.genai import types
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 
 from ..config.settings import settings
 from ..config.database import get_db
 from ..models.chat import ChatHistory
 from ..models.user import User
-from ..models.farmer_profile import FarmerProfile
-from ..models.crop import Crop
-from ..models.daily_log import DailyLog
-from ..models.sale import Sale
+from ..utils.auth import get_user_from_token
 from ..tools.registry import get_tool_registry, handle_function_call
-from ..utils.auth import extract_token_from_websocket, get_user_from_token
 
 
-class GeminiLiveService:
-    """Service for real-time Gemini Live interactions with agricultural tools."""
+class GeminiStreamingService:
+    """Service for HTTP streaming Gemini Live interactions with agricultural tools."""
 
     def __init__(self):
         # Configure the client with API key
         if not settings.GEMINI_API_KEY:
-            raise ValueError("GEMINI_API_KEY is required for Gemini Live service")
+            raise ValueError("GEMINI_API_KEY is required for Gemini streaming service")
 
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
         self.model = settings.GEMINI_LIVE_MODEL
         self.tool_registry = get_tool_registry()
-
-        # Initialize chat history tracking variables
-        self.current_user_message = None
-        self.current_user_id = None
-        self.current_ai_response = ""
-
-        self._setup_config()
-
-    def _setup_config(self, farmer_data: Optional[Dict[str, Any]] = None):
-        """Setup Gemini Live configuration with all agricultural tools for text-only chat."""
-        self.config = {
-            "response_modalities": ["TEXT"],
-            "tools": self.tool_registry.get_tools_config(),
-            "system_instruction": self._get_system_instruction(farmer_data),
-        }
 
     def _get_system_instruction(
         self, farmer_data: Optional[Dict[str, Any]] = None
@@ -66,6 +48,7 @@ You have access to comprehensive tools for:
 - Crop management (create, update, track crops and their stages)
 - Daily farming log management (activities, weather, costs, observations)
 - Sales tracking and analytics (record sales, track revenue, analyze performance)
+- Government scheme search for subsidies and programs
 
 Your capabilities include:
 1. **Crop Management**: Help farmers track their crops, stages, health scores, and harvest planning
@@ -74,7 +57,8 @@ Your capabilities include:
 4. **Disease Diagnosis**: Analyze crop images to identify diseases and recommend treatments
 5. **Weather Guidance**: Provide weather-based farming recommendations
 6. **Soil Analysis**: Analyze soil properties and recommend suitable crops and amendments
-7. **Market Research**: Search for current prices, best practices, and agricultural news
+7. **Government Schemes**: Search for and recommend relevant government schemes and subsidies
+8. **Market Research**: Search for current prices, best practices, and agricultural news
 
 Communication Style:
 - Respond in a mix of Kannada and English as appropriate for Karnataka farmers
@@ -202,6 +186,11 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
             return None
 
         try:
+            from ..models.farmer_profile import FarmerProfile
+            from ..models.crop import Crop
+            from ..models.daily_log import DailyLog
+            from ..models.sale import Sale
+
             db = next(get_db())
 
             # Get farmer profile
@@ -318,6 +307,114 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
         finally:
             db.close()
 
+    async def stream_chat_response(
+        self, message: str, user: User, farmer_data: Optional[Dict[str, Any]] = None
+    ) -> AsyncGenerator[str, None]:
+        """
+        Stream chat response using Server-Sent Events.
+
+        Args:
+            message (str): User message
+            user (User): Authenticated user
+            farmer_data (Dict[str, Any], optional): Farmer profile data
+
+        Yields:
+            str: SSE formatted response chunks
+        """
+        try:
+            logging.info(f"Starting streaming chat for user {user.id}: {message}")
+
+            # Setup configuration with personalized system prompt
+            config = {
+                "response_modalities": ["TEXT"],
+                "tools": self.tool_registry.get_tools_config(),
+                "system_instruction": self._get_system_instruction(farmer_data),
+            }
+
+            # Send initial connection message
+            if farmer_data and farmer_data.get("profile"):
+                profile = farmer_data["profile"]
+                farmer_name = profile.get("farmer_name", user.email.split("@")[0])
+                welcome_message = f"ನಮಸ್ಕಾರ {farmer_name}! I can see your farming profile and will provide personalized advice."
+            else:
+                welcome_message = "Connected to Namma Krushi AI! I can help with crops, weather, soil analysis, and farming advice."
+
+            yield f"data: {json.dumps({'type': 'system', 'content': welcome_message})}\n\n"
+
+            # Initialize variables for chat history
+            current_ai_response = ""
+
+            async with self.client.aio.live.connect(
+                model=self.model, config=config
+            ) as session:
+                # Send user message to GenAI
+                await session.send_client_content(turns={"parts": [{"text": message}]})
+
+                # Process responses and stream back to client
+                async for chunk in session.receive():
+                    if chunk.server_content:
+                        if chunk.text is not None:
+                            # Accumulate AI response for saving to database
+                            current_ai_response += chunk.text
+
+                            # Stream text response to client
+                            yield f"data: {json.dumps({'type': 'response', 'content': chunk.text})}\n\n"
+
+                    elif chunk.tool_call:
+                        # Notify client that functions are being called
+                        function_names = [
+                            fc.name for fc in chunk.tool_call.function_calls
+                        ]
+                        tools_message = f"🔧 Using tools: {', '.join(function_names)}"
+                        yield f"data: {json.dumps({'type': 'function_call', 'functions': function_names, 'message': tools_message})}\n\n"
+                        # Execute function calls using our tool registry
+                        function_responses = []
+                        for fc in chunk.tool_call.function_calls:
+                            try:
+                                # Use our existing handle_function_call but convert response format
+                                response_dict = await handle_function_call(fc)
+
+                                # Convert our dict response to types.FunctionResponse
+                                function_response = types.FunctionResponse(
+                                    id=response_dict["id"],
+                                    name=response_dict["name"],
+                                    response=response_dict["response"],
+                                )
+                                function_responses.append(function_response)
+
+                                logging.info(f"Executed tool: {fc.name}")
+                            except Exception as e:
+                                logging.error(
+                                    f"Error executing tool {fc.name}: {str(e)}"
+                                )
+                                # Create error response
+                                error_response = types.FunctionResponse(
+                                    id=fc.id,
+                                    name=fc.name,
+                                    response={
+                                        "status": "error",
+                                        "error_message": str(e),
+                                    },
+                                )
+                                function_responses.append(error_response)
+
+                        # Send tool responses back to Gemini
+                        await session.send_tool_response(
+                            function_responses=function_responses
+                        )
+
+                # Save chat history after response is complete
+                if message and current_ai_response:
+                    self.save_chat_history(user.id, message, current_ai_response)
+
+                # Send completion message
+                yield f"data: {json.dumps({'type': 'complete', 'content': 'Response completed'})}\n\n"
+
+        except Exception as e:
+            logging.error(f"Streaming chat error: {str(e)}")
+            error_message = f"Chat error: {str(e)}"
+            yield f"data: {json.dumps({'type': 'error', 'content': error_message})}\n\n"
+
     def save_chat_history(self, user_id: int, user_message: str, ai_response: str):
         """Save chat history to database."""
         if not user_id:
@@ -359,6 +456,7 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
         disease_keywords = ["disease", "pest", "sick", "problem", "ರೋಗ", "ಕೀಟ"]
         market_keywords = ["price", "sell", "market", "buyer", "ಬೆಲೆ", "ಮಾರುಕಟ್ಟೆ"]
         farm_keywords = ["farm", "crop", "plant", "harvest", "ಬೆಳೆ", "ಕೃಷಿ"]
+        scheme_keywords = ["scheme", "subsidy", "government", "yojana", "ಯೋಜನೆ", "ಸಬ್ಸಿಡಿ"]
 
         if any(keyword in message_lower for keyword in weather_keywords):
             return "weather"
@@ -366,189 +464,12 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
             return "disease"
         elif any(keyword in message_lower for keyword in market_keywords):
             return "market"
+        elif any(keyword in message_lower for keyword in scheme_keywords):
+            return "scheme"
         elif any(keyword in message_lower for keyword in farm_keywords):
             return "farm_specific"
         else:
             return "general"
-
-    async def handle_websocket_session(self, websocket, user_id: int = None):
-        """Handle a complete WebSocket session with Gemini Live and save chat history."""
-        await websocket.accept()
-
-        # Extract JWT token and get user information
-        authenticated_user = None
-        farmer_data = None
-
-        try:
-            # Try to extract token from WebSocket connection
-            token = extract_token_from_websocket(websocket)
-            if token:
-                db = next(get_db())
-                authenticated_user = get_user_from_token(token, db)
-                if authenticated_user:
-                    user_id = authenticated_user.id
-                    farmer_data = self.get_farmer_data(user_id)
-                    logging.info(
-                        f"Authenticated user: {authenticated_user.email} (ID: {user_id})"
-                    )
-                db.close()
-        except Exception as e:
-            logging.warning(f"Failed to authenticate WebSocket user: {str(e)}")
-
-        # Setup configuration with personalized system prompt
-        self._setup_config(farmer_data)
-
-        try:
-            async with self.client.aio.live.connect(
-                model=self.model, config=self.config
-            ) as session:
-                # Send personalized welcome message
-                welcome_message = "Connected to Namma Krushi AI! I can help with crops, weather, soil analysis, and farming advice."
-
-                if authenticated_user and farmer_data and farmer_data.get("profile"):
-                    profile = farmer_data["profile"]
-                    farmer_name = profile.get(
-                        "farmer_name", authenticated_user.email.split("@")[0]
-                    )
-                    welcome_message = f"ನಮಸ್ಕಾರ {farmer_name}! Welcome back to Namma Krushi AI! I can see your farming profile and will provide personalized advice for your crops and activities."
-
-                    # Add context about their current situation
-                    if farmer_data.get("current_crops"):
-                        crop_count = len(farmer_data["current_crops"])
-                        welcome_message += (
-                            f" You currently have {crop_count} crop(s) registered."
-                        )
-
-                    if profile.get("total_land_size_acres"):
-                        welcome_message += f" Your {profile['total_land_size_acres']} acres farm is ready for optimized guidance!"
-
-                await websocket.send_text(
-                    json.dumps(
-                        {
-                            "type": "system",
-                            "content": welcome_message,
-                        }
-                    )
-                )
-
-                while True:
-                    try:
-                        # Receive message from client
-                        data = await websocket.receive_text()
-                        message_data = json.loads(data)
-                        user_message = message_data.get("message", "")
-
-                        if not user_message:
-                            continue
-
-                        # Store message for history tracking
-                        self.current_user_message = user_message
-                        self.current_user_id = user_id
-                        self.current_ai_response = ""
-
-                        # Send user message to GenAI
-                        await session.send_client_content(
-                            turns={"parts": [{"text": user_message}]}
-                        )
-
-                        # Process responses and stream back to client
-                        async for chunk in session.receive():
-                            if chunk.server_content:
-                                if chunk.text is not None:
-                                    # Accumulate AI response for saving to database
-                                    self.current_ai_response += chunk.text
-
-                                    # Stream text response to client
-                                    await websocket.send_text(
-                                        json.dumps(
-                                            {"type": "response", "content": chunk.text}
-                                        )
-                                    )
-
-                            elif chunk.tool_call:
-                                # Notify client that functions are being called
-                                function_names = [
-                                    fc.name for fc in chunk.tool_call.function_calls
-                                ]
-                                await websocket.send_text(
-                                    json.dumps(
-                                        {
-                                            "type": "function_call",
-                                            "functions": function_names,
-                                            "message": f"🔧 Using tools: {', '.join(function_names)}",
-                                        }
-                                    )
-                                )
-
-                                # Execute function calls using our tool registry
-                                function_responses = []
-                                for fc in chunk.tool_call.function_calls:
-                                    try:
-                                        # Use our existing handle_function_call but convert response format
-                                        response_dict = await handle_function_call(fc)
-
-                                        # Convert our dict response to types.FunctionResponse
-                                        function_response = types.FunctionResponse(
-                                            id=response_dict["id"],
-                                            name=response_dict["name"],
-                                            response=response_dict["response"],
-                                        )
-                                        function_responses.append(function_response)
-
-                                        logging.info(f"Executed tool: {fc.name}")
-                                    except Exception as e:
-                                        logging.error(
-                                            f"Error executing tool {fc.name}: {str(e)}"
-                                        )
-                                        # Create error response
-                                        error_response = types.FunctionResponse(
-                                            id=fc.id,
-                                            name=fc.name,
-                                            response={
-                                                "status": "error",
-                                                "error_message": str(e),
-                                            },
-                                        )
-                                        function_responses.append(error_response)
-
-                                # Send tool responses back to Gemini
-                                await session.send_tool_response(
-                                    function_responses=function_responses
-                                )
-
-                        # Save chat history after response is complete
-                        if self.current_user_message and self.current_ai_response:
-                            self.save_chat_history(
-                                self.current_user_id,
-                                self.current_user_message,
-                                self.current_ai_response,
-                            )
-                            # Clear the stored message
-                            self.current_user_message = None
-                            self.current_user_id = None
-                            self.current_ai_response = ""
-
-                    except Exception as e:
-                        logging.error(f"Error in message processing: {str(e)}")
-                        await websocket.send_text(
-                            json.dumps({"type": "error", "content": str(e)})
-                        )
-
-        except Exception as e:
-            logging.error(f"WebSocket session error: {str(e)}")
-            try:
-                await websocket.send_text(
-                    json.dumps(
-                        {"type": "error", "content": f"Connection error: {str(e)}"}
-                    )
-                )
-            except:
-                pass
-        finally:
-            try:
-                await websocket.close()
-            except:
-                pass
 
     def get_available_tools(self) -> Dict[str, Any]:
         """Get information about available tools."""
@@ -557,7 +478,8 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
             "total_tools": len(tools),
             "tools": tools,
             "categories": {
-                "search": ["google_search"],
+                "search": ["google_search", "exa_search", "exa_search_agricultural"],
+                "schemes": ["search_government_schemes"],
                 "weather": ["get_weather_by_location", "get_weather_by_coordinates"],
                 "soil": ["get_soilgrids_data"],
                 "crop_analysis": ["analyze_crop_image_and_search"],
@@ -582,16 +504,12 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
 
 
 # Global service instance (lazy initialization)
-_gemini_live_service = None
+_gemini_streaming_service = None
 
 
-def get_gemini_live_service() -> GeminiLiveService:
-    """Get or create the global Gemini Live service instance."""
-    global _gemini_live_service
-    if _gemini_live_service is None:
-        _gemini_live_service = GeminiLiveService()
-    return _gemini_live_service
-
-
-# For backward compatibility
-gemini_live_service = None
+def get_gemini_streaming_service() -> GeminiStreamingService:
+    """Get or create the global Gemini streaming service instance."""
+    global _gemini_streaming_service
+    if _gemini_streaming_service is None:
+        _gemini_streaming_service = GeminiStreamingService()
+    return _gemini_streaming_service

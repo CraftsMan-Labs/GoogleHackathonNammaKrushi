@@ -16,8 +16,7 @@ router = APIRouter(prefix="/live", tags=["Gemini Live"])
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, user_id: int = None):
     """WebSocket endpoint for Gemini Live text chat with history tracking."""
-    await websocket.accept()
-    logging.info("WebSocket connection accepted")
+    logging.info("WebSocket connection requested")
 
     try:
         service = get_gemini_live_service()
@@ -26,9 +25,10 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int = None):
         logging.info("WebSocket disconnected")
     except Exception as e:
         logging.error(f"WebSocket error: {str(e)}")
-    finally:
         try:
-            await websocket.close()
+            await websocket.send_text(
+                json.dumps({"type": "error", "content": f"Connection error: {str(e)}"})
+            )
         except:
             pass
 

@@ -87,43 +87,6 @@ When farmers ask questions:
 
 Always be helpful, accurate, and focused on improving farming outcomes for Karnataka farmers."""
 
-    async def create_session(self):
-        """Create a new Gemini Live session."""
-        try:
-            session = await self.client.aio.live.connect(
-                model=self.model, config=self.config
-            )
-            logging.info("Created new Gemini Live session")
-            return session
-        except Exception as e:
-            logging.error(f"Failed to create Gemini Live session: {str(e)}")
-            raise
-
-    async def handle_user_message(self, session, message: str) -> None:
-        """Send user message to Gemini Live session."""
-        try:
-            await session.send_client_content(turns={"parts": [{"text": message}]})
-            logging.info(f"Sent user message to Gemini: {message[:100]}...")
-        except Exception as e:
-            logging.error(f"Failed to send message to Gemini: {str(e)}")
-            raise
-
-    async def handle_user_message_with_history(
-        self, session, websocket, message: str, user_id: int = None
-    ) -> None:
-        """Send user message to Gemini Live session and prepare to save chat history."""
-        try:
-            # Store the message for later saving with the response
-            self.current_user_message = message
-            self.current_user_id = user_id
-            self.current_ai_response = ""
-
-            await session.send_client_content(turns={"parts": [{"text": message}]})
-            logging.info(f"Sent user message to Gemini: {message[:100]}...")
-        except Exception as e:
-            logging.error(f"Failed to send message to Gemini: {str(e)}")
-            raise
-
     def save_chat_history(self, user_id: int, user_message: str, ai_response: str):
         """Save chat history to database."""
         if not user_id:
@@ -177,132 +140,126 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
         else:
             return "general"
 
-    async def process_session_responses(self, session, websocket):
-        """Process responses from Gemini Live session and stream to WebSocket."""
-        try:
-            async for chunk in session.receive():
-                if chunk.server_content:
-                    if chunk.text is not None:
-                        # Accumulate AI response for saving to database
-                        if hasattr(self, "current_ai_response"):
-                            self.current_ai_response += chunk.text
-
-                        # Stream text response to client
-                        await websocket.send_text(
-                            json.dumps({"type": "response", "content": chunk.text})
-                        )
-
-                        # Save chat history when response is complete
-                        if hasattr(self, "current_user_message") and hasattr(
-                            self, "current_user_id"
-                        ):
-                            # Check if this is the end of the response (you might need to adjust this logic)
-                            if (
-                                chunk.text.endswith(".")
-                                or chunk.text.endswith("!")
-                                or chunk.text.endswith("?")
-                            ):
-                                self.save_chat_history(
-                                    self.current_user_id,
-                                    self.current_user_message,
-                                    self.current_ai_response,
-                                )
-                                # Clear the stored message
-                                delattr(self, "current_user_message")
-                                delattr(self, "current_user_id")
-                                delattr(self, "current_ai_response")
-
-                elif chunk.tool_call:
-                    # Notify client that functions are being called
-                    function_names = [fc.name for fc in chunk.tool_call.function_calls]
-                    await websocket.send_text(
-                        json.dumps(
-                            {
-                                "type": "function_call",
-                                "functions": function_names,
-                                "message": f"🔧 Using tools: {', '.join(function_names)}",
-                            }
-                        )
-                    )
-
-                    # Execute function calls using our tool registry
-                    function_responses = []
-                    for fc in chunk.tool_call.function_calls:
-                        try:
-                            # Use our existing handle_function_call but convert response format
-                            response_dict = await handle_function_call(fc)
-
-                            # Convert our dict response to types.FunctionResponse
-                            function_response = types.FunctionResponse(
-                                id=response_dict["id"],
-                                name=response_dict["name"],
-                                response=response_dict["response"],
-                            )
-                            function_responses.append(function_response)
-
-                            logging.info(f"Executed tool: {fc.name}")
-                        except Exception as e:
-                            logging.error(f"Error executing tool {fc.name}: {str(e)}")
-                            # Create error response
-                            error_response = types.FunctionResponse(
-                                id=fc.id,
-                                name=fc.name,
-                                response={"status": "error", "error_message": str(e)},
-                            )
-                            function_responses.append(error_response)
-
-                    # Send tool responses back to Gemini
-                    await session.send_tool_response(
-                        function_responses=function_responses
-                    )
-
-        except Exception as e:
-            logging.error(f"Error processing session responses: {str(e)}")
-            await websocket.send_text(
-                json.dumps({"type": "error", "content": f"Session error: {str(e)}"})
-            )
-
     async def handle_websocket_session(self, websocket, user_id: int = None):
         """Handle a complete WebSocket session with Gemini Live and save chat history."""
-        session = None
+        await websocket.accept()
+
         try:
-            # Create Gemini Live session
-            session = await self.create_session()
-
-            # Send welcome message
-            await websocket.send_text(
-                json.dumps(
-                    {
-                        "type": "system",
-                        "content": "Connected to Namma Krushi AI! I can help with crops, weather, soil analysis, and farming advice.",
-                    }
+            async with self.client.aio.live.connect(
+                model=self.model, config=self.config
+            ) as session:
+                # Send welcome message
+                await websocket.send_text(
+                    json.dumps(
+                        {
+                            "type": "system",
+                            "content": "Connected to Namma Krushi AI! I can help with crops, weather, soil analysis, and farming advice.",
+                        }
+                    )
                 )
-            )
 
-            # Handle messages in parallel
-            async def message_handler():
                 while True:
                     try:
+                        # Receive message from client
                         data = await websocket.receive_text()
                         message_data = json.loads(data)
                         user_message = message_data.get("message", "")
 
-                        if user_message:
-                            # Save user message and get AI response
-                            await self.handle_user_message_with_history(
-                                session, websocket, user_message, user_id
+                        if not user_message:
+                            continue
+
+                        # Store message for history tracking
+                        self.current_user_message = user_message
+                        self.current_user_id = user_id
+                        self.current_ai_response = ""
+
+                        # Send user message to GenAI
+                        await session.send_client_content(
+                            turns={"parts": [{"text": user_message}]}
+                        )
+
+                        # Process responses and stream back to client
+                        async for chunk in session.receive():
+                            if chunk.server_content:
+                                if chunk.text is not None:
+                                    # Accumulate AI response for saving to database
+                                    self.current_ai_response += chunk.text
+
+                                    # Stream text response to client
+                                    await websocket.send_text(
+                                        json.dumps(
+                                            {"type": "response", "content": chunk.text}
+                                        )
+                                    )
+
+                            elif chunk.tool_call:
+                                # Notify client that functions are being called
+                                function_names = [
+                                    fc.name for fc in chunk.tool_call.function_calls
+                                ]
+                                await websocket.send_text(
+                                    json.dumps(
+                                        {
+                                            "type": "function_call",
+                                            "functions": function_names,
+                                            "message": f"🔧 Using tools: {', '.join(function_names)}",
+                                        }
+                                    )
+                                )
+
+                                # Execute function calls using our tool registry
+                                function_responses = []
+                                for fc in chunk.tool_call.function_calls:
+                                    try:
+                                        # Use our existing handle_function_call but convert response format
+                                        response_dict = await handle_function_call(fc)
+
+                                        # Convert our dict response to types.FunctionResponse
+                                        function_response = types.FunctionResponse(
+                                            id=response_dict["id"],
+                                            name=response_dict["name"],
+                                            response=response_dict["response"],
+                                        )
+                                        function_responses.append(function_response)
+
+                                        logging.info(f"Executed tool: {fc.name}")
+                                    except Exception as e:
+                                        logging.error(
+                                            f"Error executing tool {fc.name}: {str(e)}"
+                                        )
+                                        # Create error response
+                                        error_response = types.FunctionResponse(
+                                            id=fc.id,
+                                            name=fc.name,
+                                            response={
+                                                "status": "error",
+                                                "error_message": str(e),
+                                            },
+                                        )
+                                        function_responses.append(error_response)
+
+                                # Send tool responses back to Gemini
+                                await session.send_tool_response(
+                                    function_responses=function_responses
+                                )
+
+                        # Save chat history after response is complete
+                        if self.current_user_message and self.current_ai_response:
+                            self.save_chat_history(
+                                self.current_user_id,
+                                self.current_user_message,
+                                self.current_ai_response,
                             )
+                            # Clear the stored message
+                            self.current_user_message = None
+                            self.current_user_id = None
+                            self.current_ai_response = ""
+
                     except Exception as e:
-                        logging.error(f"Message handler error: {str(e)}")
-                        break
-
-            async def response_handler():
-                await self.process_session_responses(session, websocket)
-
-            # Run both handlers concurrently
-            await asyncio.gather(
-                message_handler(), response_handler(), return_exceptions=True
-            )
+                        logging.error(f"Error in message processing: {str(e)}")
+                        await websocket.send_text(
+                            json.dumps({"type": "error", "content": str(e)})
+                        )
 
         except Exception as e:
             logging.error(f"WebSocket session error: {str(e)}")
@@ -315,11 +272,10 @@ Always be helpful, accurate, and focused on improving farming outcomes for Karna
             except:
                 pass
         finally:
-            if session:
-                try:
-                    await session.close()
-                except:
-                    pass
+            try:
+                await websocket.close()
+            except:
+                pass
 
     def get_available_tools(self) -> Dict[str, Any]:
         """Get information about available tools."""

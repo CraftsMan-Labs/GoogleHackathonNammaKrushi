@@ -9,7 +9,7 @@ description = "AI-powered farming assistant for Karnataka farmers"
 authors = [{name = "Namma Krushi Team", email = "team@nammakrushi.com"}]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11,<3.12"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -38,6 +37,8 @@ dependencies = [
     "ruff>=0.1.6",
     "black>=23.11.0",
     "fastapi>=0.116.1",
+    "pydantic-settings>=2.10.1",
+    "pydantic[email]>=2.11.7",
 ]
 
 [project.optional-dependencies]

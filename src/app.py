@@ -51,3 +51,13 @@ def read_root() -> dict[str, str]:
 def health_check() -> dict[str, str]:
     """Health check endpoint."""
     return {"status": "healthy", "service": settings.APP_NAME}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "app:app",
+        reload=settings.DEBUG,
+        log_level="info",
+    )

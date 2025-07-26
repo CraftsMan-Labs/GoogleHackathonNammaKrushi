@@ -1,11 +1,13 @@
 from google.adk.tools import google_search
 
+
 def create_google_search_tool():
     """Provides Google Search tool via ADK"""
     return google_search
 
 
 from google.adk.tools import google_search
+
 
 def create_google_search_tool():
     return google_search
@@ -14,6 +16,7 @@ def create_google_search_tool():
 import requests
 import os
 from typing import Dict, Any
+
 
 def get_current_weather(lat: float, lon: float) -> Dict[str, Any]:
     api_key = os.getenv("GOOGLE_WEATHER_API_KEY")
@@ -24,8 +27,10 @@ def get_current_weather(lat: float, lon: float) -> Dict[str, Any]:
         return resp.json()
     return {"error": "Weather API Error", "status_code": resp.status_code}
 
+
 import requests
 from typing import Dict, Any
+
 
 def get_soilgrids_data(lat: float, lon: float) -> Dict[str, Any]:
     """
@@ -41,7 +46,7 @@ def get_soilgrids_data(lat: float, lon: float) -> Dict[str, Any]:
         properties = soil_data.get("properties", {})
         for prop, v in properties.items():
             try:
-                surface_val = v['values'][0]['mean']
+                surface_val = v["values"][0]["mean"]
                 surface_props[prop] = surface_val
             except Exception:
                 continue
@@ -50,12 +55,12 @@ def get_soilgrids_data(lat: float, lon: float) -> Dict[str, Any]:
             "latitude": lat,
             "longitude": lon,
             "surface_soil_properties": surface_props,
-            "soilgrids_raw": properties
+            "soilgrids_raw": properties,
         }
     except Exception as e:
         return {
             "status": "error",
-            "message": f"Failed to fetch SoilGrids data: {str(e)}"
+            "message": f"Failed to fetch SoilGrids data: {str(e)}",
         }
 
 
@@ -74,9 +79,5 @@ root_agent = Agent(
     - For soil properties, call the 'get_soilgrids_data' tool when lat/lon are specified.
     - Respond with clear, concise information and highlight key findings (such as soil pH, nitrogen, sand/clay content, etc).
     """,
-    tools=[
-        google_search,
-        get_current_weather,
-        get_soilgrids_data
-    ]
+    tools=[google_search, get_current_weather, get_soilgrids_data],
 )

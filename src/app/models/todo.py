@@ -23,8 +23,8 @@ class TodoTask(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    farm_id = Column(
-        Integer, ForeignKey("farms.id"), nullable=True
+    crop_id = Column(
+        Integer, ForeignKey("crops.id"), nullable=True
     )  # NULL for general tasks
 
     # Task Details
@@ -59,5 +59,5 @@ class TodoTask(Base):
 
     # Relationships
     user = relationship("User", back_populates="todos")
-    farm = relationship("Farm", back_populates="todos")
+    crop = relationship("Crop", back_populates="todos")
     recurring_instances = relationship("TodoTask", cascade="all, delete-orphan")

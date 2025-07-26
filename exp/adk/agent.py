@@ -1,21 +1,15 @@
+from google.adk.agents import Agent
+import requests
+from typing import Dict, Any
+import requests
+import os
+from typing import Dict, Any
 from google.adk.tools import google_search
 
 
 def create_google_search_tool():
     """Provides Google Search tool via ADK"""
     return google_search
-
-
-from google.adk.tools import google_search
-
-
-def create_google_search_tool():
-    return google_search
-
-
-import requests
-import os
-from typing import Dict, Any
 
 
 def get_current_weather(lat: float, lon: float) -> Dict[str, Any]:
@@ -26,10 +20,6 @@ def get_current_weather(lat: float, lon: float) -> Dict[str, Any]:
     if resp.status_code == 200:
         return resp.json()
     return {"error": "Weather API Error", "status_code": resp.status_code}
-
-
-import requests
-from typing import Dict, Any
 
 
 def get_soilgrids_data(lat: float, lon: float) -> Dict[str, Any]:
@@ -64,11 +54,9 @@ def get_soilgrids_data(lat: float, lon: float) -> Dict[str, Any]:
         }
 
 
-from google.adk.agents import Agent
-
 root_agent = Agent(
     name="multi_api_streaming_agent",
-    model="gemini-2.0-flash-live-001",
+    model="gemini-2.5-flash",
     description=(
         "Expert assistant with access to Google Search, Location, Weather, and Soil Data APIs. "
         "Given a location (as name/address or lat/lon), can provide coordinates, weather, and full soil properties."
@@ -79,5 +67,5 @@ root_agent = Agent(
     - For soil properties, call the 'get_soilgrids_data' tool when lat/lon are specified.
     - Respond with clear, concise information and highlight key findings (such as soil pH, nitrogen, sand/clay content, etc).
     """,
-    tools=[google_search, get_current_weather, get_soilgrids_data],
+    tools=[create_google_search_tool, get_current_weather, get_soilgrids_data],
 )

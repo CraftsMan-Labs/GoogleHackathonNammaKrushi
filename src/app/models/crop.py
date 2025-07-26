@@ -17,15 +17,15 @@ from sqlalchemy.sql import func
 from ..config.database import Base
 
 
-class Farm(Base):
-    """Farm model for tracking farm details."""
+class Crop(Base):
+    """Crop model for tracking crop details."""
 
-    __tablename__ = "farms"
+    __tablename__ = "crops"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    farm_name = Column(String, nullable=False)
-    farm_code = Column(String, unique=True, index=True)
+    crop_name = Column(String, nullable=False)
+    crop_code = Column(String, unique=True, index=True)
 
     # Location
     latitude = Column(Float, nullable=False)
@@ -35,7 +35,7 @@ class Farm(Base):
     district = Column(String)
     state = Column(String, default="Karnataka")
 
-    # Farm Details
+    # Crop Details
     total_area_acres = Column(Float)
     cultivable_area_acres = Column(Float)
     soil_type = Column(String)
@@ -61,11 +61,11 @@ class Farm(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
-    owner = relationship("User", back_populates="farms")
+    owner = relationship("User", back_populates="crops")
     daily_logs = relationship(
-        "DailyLog", back_populates="farm", cascade="all, delete-orphan"
+        "DailyLog", back_populates="crop", cascade="all, delete-orphan"
     )
     todos = relationship(
-        "TodoTask", back_populates="farm", cascade="all, delete-orphan"
+        "TodoTask", back_populates="crop", cascade="all, delete-orphan"
     )
-    sales = relationship("Sale", back_populates="farm", cascade="all, delete-orphan")
+    sales = relationship("Sale", back_populates="crop", cascade="all, delete-orphan")

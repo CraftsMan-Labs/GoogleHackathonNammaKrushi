@@ -5,10 +5,10 @@ from typing import Optional, List, Any
 from pydantic import BaseModel, Field
 
 
-class FarmCreate(BaseModel):
-    """Schema for creating a new farm."""
+class CropCreate(BaseModel):
+    """Schema for creating a new crop."""
 
-    farm_name: str = Field(..., min_length=2, max_length=100)
+    crop_name: str = Field(..., min_length=2, max_length=100)
     latitude: float = Field(..., ge=-90, le=90)
     longitude: float = Field(..., ge=-180, le=180)
     address: Optional[str] = Field(None, max_length=500)
@@ -27,10 +27,10 @@ class FarmCreate(BaseModel):
     crop_stage: str = Field(default="seedling", max_length=50)
 
 
-class FarmUpdate(BaseModel):
-    """Schema for updating farm information."""
+class CropUpdate(BaseModel):
+    """Schema for updating crop information."""
 
-    farm_name: Optional[str] = Field(None, min_length=2, max_length=100)
+    crop_name: Optional[str] = Field(None, min_length=2, max_length=100)
     address: Optional[str] = Field(None, max_length=500)
     village: Optional[str] = Field(None, max_length=100)
     district: Optional[str] = Field(None, max_length=50)
@@ -47,13 +47,13 @@ class FarmUpdate(BaseModel):
     crop_health_score: Optional[float] = Field(None, ge=0, le=100)
 
 
-class FarmResponse(BaseModel):
-    """Schema for farm response."""
+class CropResponse(BaseModel):
+    """Schema for crop response."""
 
     id: int
     user_id: int
-    farm_name: str
-    farm_code: Optional[str]
+    crop_name: str
+    crop_code: Optional[str]
     latitude: float
     longitude: float
     address: Optional[str]

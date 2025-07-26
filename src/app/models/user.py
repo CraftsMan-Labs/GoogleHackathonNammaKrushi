@@ -26,7 +26,7 @@ class User(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
-    farms = relationship("Farm", back_populates="owner", cascade="all, delete-orphan")
+    crops = relationship("Crop", back_populates="owner", cascade="all, delete-orphan")
     todos = relationship(
         "TodoTask", back_populates="user", cascade="all, delete-orphan"
     )

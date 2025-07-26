@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from ..config.database import get_db
 from ..models.daily_log import DailyLog
-from ..models.farm import Farm
+from ..models.crop import Crop
 from ..models.user import User
 from ..schemas.daily_log import DailyLogCreate, DailyLogResponse, DailyLogUpdate
 from ..utils.auth import get_current_user
@@ -15,35 +15,35 @@ from ..utils.auth import get_current_user
 router = APIRouter(prefix="/daily-logs", tags=["daily-logs"])
 
 
-def verify_farm_ownership(farm_id: int, user_id: int, db: Session) -> Farm:
-    """Verify that the user owns the farm."""
-    farm = db.query(Farm).filter(Farm.id == farm_id, Farm.user_id == user_id).first()
+def verify_crop_ownership(crop_id: int, user_id: int, db: Session) -> Crop:
+    """Verify that the user owns the crop."""
+    crop = db.query(Crop).filter(Crop.id == crop_id, Crop.user_id == user_id).first()
 
-    if not farm:
+    if not crop:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Farm not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Crop not found"
         )
 
-    return farm
+    return crop
 
 
 @router.post(
-    "/farms/{farm_id}/logs",
+    "/crops/{crop_id}/logs",
     response_model=DailyLogResponse,
     status_code=status.HTTP_201_CREATED,
 )
 def create_daily_log(
-    farm_id: int,
+    crop_id: int,
     log_data: DailyLogCreate,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> DailyLog:
-    """Create a new daily log entry for a farm."""
-    # Verify farm ownership
-    verify_farm_ownership(farm_id, current_user.id, db)
+    """Create a new daily log entry for a crop."""
+    # Verify crop ownership
+    verify_crop_ownership(crop_id, current_user.id, db)
 
     # Create daily log
-    db_log = DailyLog(farm_id=farm_id, **log_data.model_dump())
+    db_log = DailyLog(crop_id=crop_id, **log_data.model_dump())
 
     db.add(db_log)
     db.commit()
@@ -52,21 +52,21 @@ def create_daily_log(
     return db_log
 
 
-@router.get("/farms/{farm_id}/logs", response_model=List[DailyLogResponse])
-def get_farm_daily_logs(
-    farm_id: int,
+@router.get("/crops/{crop_id}/logs", response_model=List[DailyLogResponse])
+def get_crop_daily_logs(
+    crop_id: int,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     skip: int = 0,
     limit: int = 100,
 ) -> List[DailyLog]:
-    """Get all daily logs for a farm."""
-    # Verify farm ownership
-    verify_farm_ownership(farm_id, current_user.id, db)
+    """Get all daily logs for a crop."""
+    # Verify crop ownership
+    verify_crop_ownership(crop_id, current_user.id, db)
 
     return (
         db.query(DailyLog)
-        .filter(DailyLog.farm_id == farm_id)
+        .filter(DailyLog.crop_id == crop_id)
         .order_by(DailyLog.log_date.desc())
         .offset(skip)
         .limit(limit)
@@ -83,8 +83,8 @@ def get_daily_log(
     """Get a specific daily log entry."""
     log = (
         db.query(DailyLog)
-        .join(Farm)
-        .filter(DailyLog.id == log_id, Farm.user_id == current_user.id)
+        .join(Crop)
+        .filter(DailyLog.id == log_id, Crop.user_id == current_user.id)
         .first()
     )
 
@@ -106,8 +106,8 @@ def update_daily_log(
     """Update a daily log entry."""
     log = (
         db.query(DailyLog)
-        .join(Farm)
-        .filter(DailyLog.id == log_id, Farm.user_id == current_user.id)
+        .join(Crop)
+        .filter(DailyLog.id == log_id, Crop.user_id == current_user.id)
         .first()
     )
 
@@ -136,8 +136,8 @@ def delete_daily_log(
     """Delete a daily log entry."""
     log = (
         db.query(DailyLog)
-        .join(Farm)
-        .filter(DailyLog.id == log_id, Farm.user_id == current_user.id)
+        .join(Crop)
+        .filter(DailyLog.id == log_id, Crop.user_id == current_user.id)
         .first()
     )
 
@@ -159,11 +159,11 @@ def get_user_daily_logs(
     skip: int = 0,
     limit: int = 100,
 ) -> List[DailyLog]:
-    """Get all daily logs for the current user across all farms."""
+    """Get all daily logs for the current user across all crops."""
     return (
         db.query(DailyLog)
-        .join(Farm)
-        .filter(Farm.user_id == current_user.id)
+        .join(Crop)
+        .filter(Crop.user_id == current_user.id)
         .order_by(DailyLog.log_date.desc())
         .offset(skip)
         .limit(limit)

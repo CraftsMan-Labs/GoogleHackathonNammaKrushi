@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..config.database import get_db
-from ..models.farm import Farm
+from ..models.crop import Crop
 from ..models.todo import TodoTask
 from ..models.user import User
 from ..schemas.todo import TodoCreate, TodoResponse, TodoUpdate
@@ -41,7 +41,7 @@ def create_recurring_instance(template: TodoTask, db: Session) -> None:
     """Create a new instance of a recurring task."""
     instance = TodoTask(
         user_id=template.user_id,
-        farm_id=template.farm_id,
+        crop_id=template.crop_id,
         task_title=template.task_title,
         task_description=template.task_description,
         priority=template.priority,
@@ -62,16 +62,16 @@ def create_todo(
     db: Annotated[Session, Depends(get_db)],
 ) -> TodoTask:
     """Create a new TODO task."""
-    # Verify farm ownership if farm_id is provided
-    if todo_data.farm_id:
-        farm = (
-            db.query(Farm)
-            .filter(Farm.id == todo_data.farm_id, Farm.user_id == current_user.id)
+    # Verify crop ownership if crop_id is provided
+    if todo_data.crop_id:
+        crop = (
+            db.query(Crop)
+            .filter(Crop.id == todo_data.crop_id, Crop.user_id == current_user.id)
             .first()
         )
-        if not farm:
+        if not crop:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Farm not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Crop not found"
             )
 
     # Create the main TODO
@@ -101,7 +101,7 @@ def get_user_todos(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     status_filter: Optional[str] = None,
-    farm_id: Optional[int] = None,
+    crop_id: Optional[int] = None,
     skip: int = 0,
     limit: int = 100,
 ) -> List[TodoTask]:
@@ -111,8 +111,8 @@ def get_user_todos(
     if status_filter:
         query = query.filter(TodoTask.status == status_filter)
 
-    if farm_id:
-        query = query.filter(TodoTask.farm_id == farm_id)
+    if crop_id:
+        query = query.filter(TodoTask.crop_id == crop_id)
 
     return query.order_by(TodoTask.due_date).offset(skip).limit(limit).all()
 

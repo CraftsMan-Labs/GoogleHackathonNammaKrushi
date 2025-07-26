@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from ..config.database import get_db
 from ..models.chat import ChatHistory
-from ..models.farm import Farm
+from ..models.crop import Crop
 from ..models.user import User
 from ..schemas.chat import ChatMessage, ChatResponse
 from ..utils.auth import get_current_user
@@ -59,16 +59,16 @@ async def send_chat_message(
     db: Annotated[Session, Depends(get_db)],
 ) -> ChatHistory:
     """Send a chat message and get AI response."""
-    # Verify farm ownership if farm_id is provided
-    if chat_data.farm_id:
+    # Verify farm ownership if crop_id is provided
+    if chat_data.crop_id:
         farm = (
-            db.query(Farm)
-            .filter(Farm.id == chat_data.farm_id, Farm.user_id == current_user.id)
+            db.query(Crop)
+            .filter(Crop.id == chat_data.crop_id, Crop.user_id == current_user.id)
             .first()
         )
         if not farm:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Farm not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Crop not found"
             )
 
     # Determine message type
@@ -82,7 +82,7 @@ async def send_chat_message(
     # Create chat history entry
     db_chat = ChatHistory(
         user_id=current_user.id,
-        farm_id=chat_data.farm_id,
+        crop_id=chat_data.crop_id,
         user_message=chat_data.message,
         ai_response=ai_response,
         message_type=message_type,
@@ -103,15 +103,15 @@ async def send_chat_message(
 def get_chat_history(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-    farm_id: int | None = None,
+    crop_id: int | None = None,
     skip: int = 0,
     limit: int = 50,
 ) -> List[ChatHistory]:
     """Get chat history for the current user."""
     query = db.query(ChatHistory).filter(ChatHistory.user_id == current_user.id)
 
-    if farm_id:
-        query = query.filter(ChatHistory.farm_id == farm_id)
+    if crop_id:
+        query = query.filter(ChatHistory.crop_id == crop_id)
 
     return query.order_by(ChatHistory.created_at.desc()).offset(skip).limit(limit).all()
 

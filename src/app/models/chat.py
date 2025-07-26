@@ -24,9 +24,9 @@ class ChatHistory(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    farm_id = Column(
-        Integer, ForeignKey("farms.id"), nullable=True
-    )  # if farm-specific query
+    crop_id = Column(
+        Integer, ForeignKey("crops.id"), nullable=True
+    )  # if crop-specific query
 
     # Message Content
     user_message = Column(Text, nullable=False)

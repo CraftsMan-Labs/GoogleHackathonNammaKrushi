@@ -14,7 +14,7 @@ class Sale(Base):
     __tablename__ = "sales"
 
     id = Column(Integer, primary_key=True, index=True)
-    farm_id = Column(Integer, ForeignKey("farms.id"), nullable=False)
+    crop_id = Column(Integer, ForeignKey("crops.id"), nullable=False)
 
     # Sale Details
     sale_date = Column(Date, nullable=False, default=date.today)
@@ -52,4 +52,4 @@ class Sale(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
-    farm = relationship("Farm", back_populates="sales")
+    crop = relationship("Crop", back_populates="sales")

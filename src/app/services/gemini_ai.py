@@ -5,7 +5,7 @@ import json
 from typing import Optional, Dict, Any, List
 import google.generativeai as genai
 from ..models.user import User
-from ..models.farm import Farm
+from ..models.crop import Crop
 from ..config.settings import settings
 
 # Configure Gemini AI
@@ -20,12 +20,12 @@ class GeminiAIService:
     def _build_context_prompt(
         self, 
         user: User, 
-        farm: Optional[Farm] = None,
+        crop: Optional[Crop] = None,
         message_type: str = "general"
     ) -> str:
-        """Build context prompt for the AI based on user and farm data."""
+        """Build context prompt for the AI based on user and crop data."""
         
-        context = f"""You are Namma Krushi AI, an intelligent farming assistant specifically designed for Karnataka farmers. 
+        context = f"""You are Namma Krushi AI, an intelligent croping assistant specifically designed for Karnataka cropers. 
         
 User Information:
 - Name: {user.name}
@@ -34,42 +34,42 @@ User Information:
 
 """
         
-        if farm:
-            context += f"""Farm Information:
-- Farm Name: {farm.farm_name}
-- Total Area: {farm.total_area_acres} acres
-- Current Crop: {farm.current_crop} ({farm.crop_variety})
-- Crop Stage: {farm.crop_stage}
-- Soil Type: {farm.soil_type}
-- Irrigation: {farm.irrigation_type}
-- Water Source: {farm.water_source}
-- Crop Health Score: {farm.crop_health_score}/100
+        if crop:
+            context += f"""Crop Information:
+- Crop Name: {crop.crop_name}
+- Total Area: {crop.total_area_acres} acres
+- Current Crop: {crop.current_crop} ({crop.crop_variety})
+- Crop Stage: {crop.crop_stage}
+- Soil Type: {crop.soil_type}
+- Irrigation: {crop.irrigation_type}
+- Water Source: {crop.water_source}
+- Crop Health Score: {crop.crop_health_score}/100
 
 """
 
         context += f"""Instructions:
-1. Respond in a mix of Kannada and English as appropriate for Karnataka farmers
+1. Respond in a mix of Kannada and English as appropriate for Karnataka cropers
 2. Be practical, actionable, and specific to Karnataka's agricultural conditions
-3. Consider the current season and local farming practices
+3. Consider the current season and local croping practices
 4. Provide step-by-step guidance when needed
 5. Be encouraging and supportive
 6. If asked about diseases/pests, ask for photos if not provided
 7. Include relevant government schemes when applicable
 8. Keep responses concise but informative
-9. Use simple language that farmers can understand
+9. Use simple language that cropers can understand
 10. Include cost-effective solutions
 
 Message Type: {message_type}
 
-Respond as a knowledgeable, friendly farming expert who understands both traditional and modern farming practices in Karnataka.
+Respond as a knowledgeable, friendly croping expert who understands both traditional and modern croping practices in Karnataka.
 """
         
         return context
     
-    def _build_farming_knowledge_prompt(self) -> str:
-        """Build farming knowledge specific to Karnataka."""
+    def _build_croping_knowledge_prompt(self) -> str:
+        """Build croping knowledge specific to Karnataka."""
         return """
-Karnataka Farming Context:
+Karnataka Croping Context:
 - Major crops: Rice, Ragi, Maize, Cotton, Sugarcane, Coconut, Arecanut, Coffee, Cardamom
 - Seasons: Kharif (June-Oct), Rabi (Nov-Feb), Summer (Mar-May)
 - Common soil types: Red soil, Black soil, Laterite soil, Alluvial soil
@@ -89,7 +89,7 @@ Weather patterns:
         self,
         user_message: str,
         user: User,
-        farm: Optional[Farm] = None,
+        crop: Optional[Crop] = None,
         message_type: str = "general",
         language: str = "kn"
     ) -> Dict[str, Any]:
@@ -97,13 +97,13 @@ Weather patterns:
         
         try:
             # Build the complete prompt
-            context_prompt = self._build_context_prompt(user, farm, message_type)
-            farming_knowledge = self._build_farming_knowledge_prompt()
+            context_prompt = self._build_context_prompt(user, crop, message_type)
+            croping_knowledge = self._build_croping_knowledge_prompt()
             
             full_prompt = f"""
 {context_prompt}
 
-{farming_knowledge}
+{croping_knowledge}
 
 User's Question: {user_message}
 
@@ -132,7 +132,7 @@ Please provide a helpful, practical response. If the user is asking in Kannada, 
                 "actions_triggered": actions,
                 "context_data": {
                     "message_type": message_type,
-                    "farm_id": farm.id if farm else None,
+                    "crop_id": crop.id if crop else None,
                     "language": language,
                     "user_location": f"{user.location}, {user.district}"
                 }

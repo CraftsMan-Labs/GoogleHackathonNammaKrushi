@@ -1,5 +1,5 @@
 from .user import UserCreate, UserResponse, UserLogin, UserUpdate
-from .farm import FarmCreate, FarmResponse, FarmUpdate
+from .crop import CropCreate, CropResponse, CropUpdate
 from .daily_log import DailyLogCreate, DailyLogResponse, DailyLogUpdate
 from .todo import TodoCreate, TodoResponse, TodoUpdate
 from .sale import SaleCreate, SaleResponse, SaleUpdate
@@ -12,9 +12,9 @@ __all__ = [
     "UserResponse",
     "UserLogin",
     "UserUpdate",
-    "FarmCreate",
-    "FarmResponse",
-    "FarmUpdate",
+    "CropCreate",
+    "CropResponse",
+    "CropUpdate",
     "DailyLogCreate",
     "DailyLogResponse",
     "DailyLogUpdate",

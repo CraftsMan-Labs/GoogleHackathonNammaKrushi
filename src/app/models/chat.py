@@ -43,10 +43,8 @@ class ChatHistory(Base):
     context_data = Column(JSON)  # Additional context used for response
     confidence_score = Column(Float)  # AI confidence in response
 
-    # Voice Interaction
+    # Message Format (keeping for backward compatibility, always False now)
     is_voice_message = Column(Boolean, default=False)
-    audio_duration = Column(Float)  # in seconds
-    voice_transcript_confidence = Column(Float)
 
     # Response Actions
     actions_triggered = Column(

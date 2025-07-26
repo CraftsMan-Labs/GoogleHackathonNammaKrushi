@@ -585,7 +585,7 @@ async def get_demo_page():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Agricultural Assistant - Live Demo</title>
+        <title>Agricultural Assistant - Text Chat Demo</title>
         <style>
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -734,7 +734,7 @@ async def get_demo_page():
         <div class="container">
             <div class="header">
                 <h1>🌱 Agricultural Assistant</h1>
-                <p>Live AI assistant for farming, weather, soil analysis, and crop diseases</p>
+                <p>Text Chat AI assistant for farming, weather, soil analysis, and crop diseases</p>
             </div>
             
             <div class="status" id="status">
@@ -743,12 +743,12 @@ async def get_demo_page():
             
             <div class="chat-container" id="chatContainer">
                 <div class="message bot-message">
-                    <strong>Agricultural Assistant:</strong> Hello! I'm your AI farming assistant. I can help you with:
+                    <strong>Agricultural Assistant:</strong> Hello! I'm your text-based AI farming assistant. I can help you with:
                     <br>• Crop disease identification and treatment
                     <br>• Weather information for farming decisions  
                     <br>• Soil analysis for any location
                     <br>• Agricultural research and advice
-                    <br><br>Try asking me something or use the examples below!
+                    <br><br>Type your questions or use the examples below!
                 </div>
             </div>
             

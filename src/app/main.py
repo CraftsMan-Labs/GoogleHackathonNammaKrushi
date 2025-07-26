@@ -14,6 +14,7 @@ from .api import (
     consumer_prices,
     streaming_auth,
     farmer_profile,
+    gemini_live,
 )
 from .config.database import create_tables
 from .config.settings import settings
@@ -49,6 +50,7 @@ app.include_router(chat.router)
 app.include_router(weather.router)
 app.include_router(consumer_prices.router)
 app.include_router(farmer_profile.router)
+app.include_router(gemini_live.router)
 
 
 @app.get("/")

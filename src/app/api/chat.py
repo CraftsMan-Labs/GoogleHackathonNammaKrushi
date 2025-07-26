@@ -87,8 +87,7 @@ async def send_chat_message(
         ai_response=ai_response,
         message_type=message_type,
         language=chat_data.language,
-        is_voice_message=chat_data.is_voice_message,
-        audio_duration=chat_data.audio_duration,
+        is_voice_message=False,  # Always False since voice is removed
         follow_up_needed=False,
     )
 

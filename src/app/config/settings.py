@@ -28,9 +28,16 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY")
     GEMINI_MODEL: str = "gemini-pro"
     GEMINI_VISION_MODEL: str = "gemini-pro-vision"
+    GEMINI_LIVE_MODEL: str = "gemini-live-2.5-flash-preview"
+
+    # Google APIs
+    GOOGLE_SEARCH_API_KEY: Optional[str] = os.getenv("GOOGLE_SEARCH_API_KEY")
+    GOOGLE_SEARCH_CSE_ID: Optional[str] = os.getenv("GOOGLE_SEARCH_CSE_ID")
+    GOOGLE_VISION_API_KEY: Optional[str] = os.getenv("GOOGLE_VISION_API_KEY")
 
     # External APIs
     WEATHER_API_KEY: Optional[str] = os.getenv("WEATHER_API_KEY")
+    OPENWEATHER_API_KEY: Optional[str] = os.getenv("OPENWEATHER_API_KEY")
     WEATHER_API_URL: str = "https://api.openweathermap.org/data/2.5"
 
     # Voice Settings

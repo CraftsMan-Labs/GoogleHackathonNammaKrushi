@@ -38,9 +38,6 @@ def register_user(
         email=user_data.email,
         password_hash=hashed_password,
         phone=user_data.phone,
-        location=user_data.location,
-        district=user_data.district,
-        state=user_data.state,
         latitude=user_data.latitude,
         longitude=user_data.longitude,
     )
@@ -76,7 +73,7 @@ def login_user(
 @router.post("/token", response_model=Token)
 def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
 ) -> dict[str, str]:
     """OAuth2 compatible token endpoint for Swagger UI authorization."""
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -86,10 +83,10 @@ def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    
+
     return {"access_token": access_token, "token_type": "bearer"}

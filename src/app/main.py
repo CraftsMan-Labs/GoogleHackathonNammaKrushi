@@ -3,7 +3,17 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import auth, crops, daily_logs, todos, sales, chat, weather, consumer_prices
+from .api import (
+    auth,
+    crops,
+    daily_logs,
+    todos,
+    sales,
+    chat,
+    weather,
+    consumer_prices,
+    streaming_auth,
+)
 from .config.database import create_tables
 from .config.settings import settings
 
@@ -29,6 +39,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(streaming_auth.router)
 app.include_router(crops.router)
 app.include_router(daily_logs.router)
 app.include_router(todos.router)

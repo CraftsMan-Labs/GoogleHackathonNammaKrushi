@@ -36,3 +36,6 @@ class User(Base):
     chat_history = relationship(
         "ChatHistory", back_populates="user", cascade="all, delete-orphan"
     )
+    soil_analyses = relationship(
+        "SoilAnalysis", back_populates="user", cascade="all, delete-orphan"
+    )

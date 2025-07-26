@@ -12,9 +12,6 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=6)
     phone: Optional[str] = Field(None, max_length=15)
-    location: Optional[str] = Field(None, max_length=100)
-    district: Optional[str] = Field(None, max_length=50)
-    state: str = Field(default="Karnataka", max_length=50)
     latitude: Optional[float] = Field(None, ge=-90, le=90)
     longitude: Optional[float] = Field(None, ge=-180, le=180)
 
@@ -38,9 +35,6 @@ class UserResponse(BaseModel):
     name: str
     email: str
     phone: Optional[str]
-    location: Optional[str]
-    district: Optional[str]
-    state: str
     latitude: Optional[float]
     longitude: Optional[float]
     created_at: datetime

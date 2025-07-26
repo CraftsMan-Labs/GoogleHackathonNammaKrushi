@@ -39,3 +39,9 @@ class User(Base):
     soil_analyses = relationship(
         "SoilAnalysis", back_populates="user", cascade="all, delete-orphan"
     )
+    farmer_profile = relationship(
+        "FarmerProfile",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )

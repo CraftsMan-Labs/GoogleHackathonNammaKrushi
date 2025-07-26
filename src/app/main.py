@@ -13,6 +13,7 @@ from .api import (
     weather,
     consumer_prices,
     streaming_auth,
+    farmer_profile,
 )
 from .config.database import create_tables
 from .config.settings import settings
@@ -47,6 +48,7 @@ app.include_router(sales.router)
 app.include_router(chat.router)
 app.include_router(weather.router)
 app.include_router(consumer_prices.router)
+app.include_router(farmer_profile.router)
 
 
 @app.get("/")

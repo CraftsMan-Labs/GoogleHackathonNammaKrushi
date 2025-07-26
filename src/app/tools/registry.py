@@ -6,7 +6,6 @@ Central registry for all tools and unified function call handling.
 
 import logging
 from typing import Dict, Any, List, Callable
-from google.genai import types
 
 from .search import google_search, SEARCH_TOOL_DECLARATION
 from .weather import (
@@ -17,6 +16,32 @@ from .weather import (
 )
 from .crop_analysis import analyze_crop_image_and_search, CROP_ANALYSIS_TOOL_DECLARATION
 from .soil_analysis import get_soilgrids_data, SOIL_ANALYSIS_TOOL_DECLARATION
+from .crop_management import (
+    create_crop_tool,
+    update_crop_tool,
+    get_crops_tool,
+    CREATE_CROP_TOOL_DECLARATION,
+    UPDATE_CROP_TOOL_DECLARATION,
+    GET_CROPS_TOOL_DECLARATION,
+)
+from .daily_log_management import (
+    create_daily_log_tool,
+    update_daily_log_tool,
+    get_daily_logs_tool,
+    CREATE_DAILY_LOG_TOOL_DECLARATION,
+    UPDATE_DAILY_LOG_TOOL_DECLARATION,
+    GET_DAILY_LOGS_TOOL_DECLARATION,
+)
+from .sales_management import (
+    create_sale_tool,
+    update_sale_tool,
+    get_sales_tool,
+    get_sales_analytics_tool,
+    CREATE_SALE_TOOL_DECLARATION,
+    UPDATE_SALE_TOOL_DECLARATION,
+    GET_SALES_TOOL_DECLARATION,
+    GET_SALES_ANALYTICS_TOOL_DECLARATION,
+)
 
 
 class ToolRegistry:
@@ -54,6 +79,44 @@ class ToolRegistry:
         # Soil analysis tools
         self.register_tool(
             "get_soilgrids_data", get_soilgrids_data, SOIL_ANALYSIS_TOOL_DECLARATION
+        )
+
+        # Crop management tools
+        self.register_tool(
+            "create_crop_tool", create_crop_tool, CREATE_CROP_TOOL_DECLARATION
+        )
+        self.register_tool(
+            "update_crop_tool", update_crop_tool, UPDATE_CROP_TOOL_DECLARATION
+        )
+        self.register_tool("get_crops_tool", get_crops_tool, GET_CROPS_TOOL_DECLARATION)
+
+        # Daily log management tools
+        self.register_tool(
+            "create_daily_log_tool",
+            create_daily_log_tool,
+            CREATE_DAILY_LOG_TOOL_DECLARATION,
+        )
+        self.register_tool(
+            "update_daily_log_tool",
+            update_daily_log_tool,
+            UPDATE_DAILY_LOG_TOOL_DECLARATION,
+        )
+        self.register_tool(
+            "get_daily_logs_tool", get_daily_logs_tool, GET_DAILY_LOGS_TOOL_DECLARATION
+        )
+
+        # Sales management tools
+        self.register_tool(
+            "create_sale_tool", create_sale_tool, CREATE_SALE_TOOL_DECLARATION
+        )
+        self.register_tool(
+            "update_sale_tool", update_sale_tool, UPDATE_SALE_TOOL_DECLARATION
+        )
+        self.register_tool("get_sales_tool", get_sales_tool, GET_SALES_TOOL_DECLARATION)
+        self.register_tool(
+            "get_sales_analytics_tool",
+            get_sales_analytics_tool,
+            GET_SALES_ANALYTICS_TOOL_DECLARATION,
         )
 
     def register_tool(self, name: str, function: Callable, declaration: Dict[str, Any]):
@@ -128,7 +191,7 @@ def get_tool_registry() -> ToolRegistry:
     return _tool_registry
 
 
-async def handle_function_call(function_call) -> types.FunctionResponse:
+async def handle_function_call(function_call) -> Dict[str, Any]:
     """
     Handle function calls from Gemini AI and return responses.
 
@@ -136,7 +199,7 @@ async def handle_function_call(function_call) -> types.FunctionResponse:
         function_call: Function call from Gemini AI
 
     Returns:
-        types.FunctionResponse: Function response for Gemini AI
+        Dict[str, Any]: Function response for Gemini AI
     """
     function_name = function_call.name
     args = function_call.args
@@ -160,6 +223,169 @@ async def handle_function_call(function_call) -> types.FunctionResponse:
             result = await tool_function(args.get("lat", 0), args.get("lon", 0))
         elif function_name == "get_soilgrids_data":
             result = await tool_function(args.get("lat", 0), args.get("lon", 0))
+
+        # Crop management tools
+        elif function_name == "create_crop_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_name=args.get("crop_name"),
+                latitude=args.get("latitude"),
+                longitude=args.get("longitude"),
+                total_area_acres=args.get("total_area_acres"),
+                current_crop=args.get("current_crop"),
+                crop_variety=args.get("crop_variety"),
+                planting_date=args.get("planting_date"),
+                expected_harvest_date=args.get("expected_harvest_date"),
+                soil_type=args.get("soil_type"),
+                irrigation_type=args.get("irrigation_type"),
+                address=args.get("address"),
+                village=args.get("village"),
+                district=args.get("district"),
+                state=args.get("state", "Karnataka"),
+            )
+        elif function_name == "update_crop_tool":
+            result = await tool_function(
+                crop_id=args.get("crop_id"),
+                user_id=args.get("user_id"),
+                crop_stage=args.get("crop_stage"),
+                crop_health_score=args.get("crop_health_score"),
+                current_crop=args.get("current_crop"),
+                crop_variety=args.get("crop_variety"),
+                planting_date=args.get("planting_date"),
+                expected_harvest_date=args.get("expected_harvest_date"),
+                total_area_acres=args.get("total_area_acres"),
+                cultivable_area_acres=args.get("cultivable_area_acres"),
+                soil_type=args.get("soil_type"),
+                irrigation_type=args.get("irrigation_type"),
+            )
+        elif function_name == "get_crops_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_id=args.get("crop_id"),
+                current_crop=args.get("current_crop"),
+                crop_stage=args.get("crop_stage"),
+                limit=args.get("limit", 10),
+            )
+
+        # Daily log management tools
+        elif function_name == "create_daily_log_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_id=args.get("crop_id"),
+                log_date=args.get("log_date"),
+                activity_type=args.get("activity_type"),
+                description=args.get("description"),
+                weather_condition=args.get("weather_condition"),
+                temperature=args.get("temperature"),
+                humidity=args.get("humidity"),
+                rainfall=args.get("rainfall"),
+                irrigation_duration=args.get("irrigation_duration"),
+                fertilizer_applied=args.get("fertilizer_applied"),
+                pesticide_applied=args.get("pesticide_applied"),
+                labor_hours=args.get("labor_hours"),
+                cost_incurred=args.get("cost_incurred"),
+                observations=args.get("observations"),
+                issues_found=args.get("issues_found"),
+                actions_taken=args.get("actions_taken"),
+            )
+        elif function_name == "update_daily_log_tool":
+            result = await tool_function(
+                log_id=args.get("log_id"),
+                user_id=args.get("user_id"),
+                activity_type=args.get("activity_type"),
+                description=args.get("description"),
+                weather_condition=args.get("weather_condition"),
+                temperature=args.get("temperature"),
+                humidity=args.get("humidity"),
+                rainfall=args.get("rainfall"),
+                irrigation_duration=args.get("irrigation_duration"),
+                fertilizer_applied=args.get("fertilizer_applied"),
+                pesticide_applied=args.get("pesticide_applied"),
+                labor_hours=args.get("labor_hours"),
+                cost_incurred=args.get("cost_incurred"),
+                observations=args.get("observations"),
+                issues_found=args.get("issues_found"),
+                actions_taken=args.get("actions_taken"),
+            )
+        elif function_name == "get_daily_logs_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_id=args.get("crop_id"),
+                log_id=args.get("log_id"),
+                activity_type=args.get("activity_type"),
+                start_date=args.get("start_date"),
+                end_date=args.get("end_date"),
+                limit=args.get("limit", 20),
+            )
+
+        # Sales management tools
+        elif function_name == "create_sale_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_id=args.get("crop_id"),
+                sale_date=args.get("sale_date"),
+                crop_type=args.get("crop_type"),
+                crop_variety=args.get("crop_variety"),
+                quantity_kg=args.get("quantity_kg"),
+                price_per_kg=args.get("price_per_kg"),
+                total_amount=args.get("total_amount"),
+                buyer_name=args.get("buyer_name"),
+                buyer_type=args.get("buyer_type"),
+                buyer_contact=args.get("buyer_contact"),
+                payment_method=args.get("payment_method"),
+                payment_status=args.get("payment_status", "pending"),
+                transportation_cost=args.get("transportation_cost"),
+                commission_paid=args.get("commission_paid"),
+                quality_grade=args.get("quality_grade"),
+                quality_notes=args.get("quality_notes"),
+                market_location=args.get("market_location"),
+                market_price_reference=args.get("market_price_reference"),
+                notes=args.get("notes"),
+                invoice_number=args.get("invoice_number"),
+            )
+        elif function_name == "update_sale_tool":
+            result = await tool_function(
+                sale_id=args.get("sale_id"),
+                user_id=args.get("user_id"),
+                crop_type=args.get("crop_type"),
+                crop_variety=args.get("crop_variety"),
+                quantity_kg=args.get("quantity_kg"),
+                price_per_kg=args.get("price_per_kg"),
+                total_amount=args.get("total_amount"),
+                buyer_name=args.get("buyer_name"),
+                buyer_type=args.get("buyer_type"),
+                buyer_contact=args.get("buyer_contact"),
+                payment_method=args.get("payment_method"),
+                payment_status=args.get("payment_status"),
+                transportation_cost=args.get("transportation_cost"),
+                commission_paid=args.get("commission_paid"),
+                quality_grade=args.get("quality_grade"),
+                quality_notes=args.get("quality_notes"),
+                market_location=args.get("market_location"),
+                market_price_reference=args.get("market_price_reference"),
+                notes=args.get("notes"),
+                invoice_number=args.get("invoice_number"),
+            )
+        elif function_name == "get_sales_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                sale_id=args.get("sale_id"),
+                crop_id=args.get("crop_id"),
+                crop_type=args.get("crop_type"),
+                buyer_type=args.get("buyer_type"),
+                payment_status=args.get("payment_status"),
+                start_date=args.get("start_date"),
+                end_date=args.get("end_date"),
+                limit=args.get("limit", 20),
+            )
+        elif function_name == "get_sales_analytics_tool":
+            result = await tool_function(
+                user_id=args.get("user_id"),
+                crop_type=args.get("crop_type"),
+                start_date=args.get("start_date"),
+                end_date=args.get("end_date"),
+            )
+
         else:
             result = {
                 "status": "error",
@@ -167,24 +393,22 @@ async def handle_function_call(function_call) -> types.FunctionResponse:
             }
 
         logging.info(f"Successfully executed tool: {function_name}")
-        return types.FunctionResponse(
-            id=function_call.id, name=function_call.name, response=result
-        )
+        return {"id": function_call.id, "name": function_call.name, "response": result}
 
     except KeyError as e:
         logging.error(f"Tool not found: {function_name}")
-        return types.FunctionResponse(
-            id=function_call.id,
-            name=function_call.name,
-            response={"status": "error", "error_message": str(e)},
-        )
+        return {
+            "id": function_call.id,
+            "name": function_call.name,
+            "response": {"status": "error", "error_message": str(e)},
+        }
     except Exception as e:
         logging.error(f"Error executing tool {function_name}: {str(e)}")
-        return types.FunctionResponse(
-            id=function_call.id,
-            name=function_call.name,
-            response={"status": "error", "error_message": str(e)},
-        )
+        return {
+            "id": function_call.id,
+            "name": function_call.name,
+            "response": {"status": "error", "error_message": str(e)},
+        }
 
 
 def get_system_instruction() -> str:

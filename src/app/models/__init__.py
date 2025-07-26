@@ -5,6 +5,7 @@ from .todo import TodoTask
 from .sale import Sale
 from .weather import WeatherHistory
 from .chat import ChatHistory
+from .consumer_price import ConsumerPrice
 
 __all__ = [
     "User",
@@ -14,4 +15,5 @@ __all__ = [
     "Sale",
     "WeatherHistory",
     "ChatHistory",
+    "ConsumerPrice",
 ]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import auth, crops, daily_logs, todos, sales, chat, weather
+from .api import auth, crops, daily_logs, todos, sales, chat, weather, consumer_prices
 from .config.database import create_tables
 from .config.settings import settings
 
@@ -35,6 +35,7 @@ app.include_router(todos.router)
 app.include_router(sales.router)
 app.include_router(chat.router)
 app.include_router(weather.router)
+app.include_router(consumer_prices.router)
 
 
 @app.get("/")

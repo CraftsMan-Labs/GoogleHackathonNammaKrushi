@@ -6,6 +6,7 @@ from .sale import SaleCreate, SaleResponse, SaleUpdate
 from .weather import WeatherResponse, WeatherCreate
 from .chat import ChatMessage, ChatResponse
 from .auth import Token, TokenData
+from .consumer_price import ConsumerPriceCreate, ConsumerPriceResponse, ConsumerPriceUpdate
 
 __all__ = [
     "UserCreate",
@@ -30,4 +31,7 @@ __all__ = [
     "ChatResponse",
     "Token",
     "TokenData",
+    "ConsumerPriceCreate",
+    "ConsumerPriceResponse",
+    "ConsumerPriceUpdate",
 ]

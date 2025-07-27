@@ -48,6 +48,8 @@ dependencies = [
     "a2a-sdk[sqlite]>=0.2.16",
     "matplotlib>=3.10.3",
     "seaborn>=0.13.2",
+    "mcp>=1.0.0",
+    "anyio>=4.0.0",
 ]
 
 [project.optional-dependencies]

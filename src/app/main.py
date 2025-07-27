@@ -16,6 +16,9 @@ from .api import (
     farmer_profile,
     gemini_live,
     schemes,
+    disease_research,
+    business_intelligence,
+    reports,
 )
 from .config.database import create_tables
 from .config.settings import settings
@@ -53,6 +56,9 @@ app.include_router(consumer_prices.router)
 app.include_router(farmer_profile.router)
 app.include_router(gemini_live.router)
 app.include_router(schemes.router)
+app.include_router(disease_research.router)
+app.include_router(business_intelligence.router)
+app.include_router(reports.router)
 
 
 @app.get("/")

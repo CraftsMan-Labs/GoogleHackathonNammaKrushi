@@ -69,3 +69,4 @@ class Crop(Base):
         "TodoTask", back_populates="crop", cascade="all, delete-orphan"
     )
     sales = relationship("Sale", back_populates="crop", cascade="all, delete-orphan")
+    research_reports = relationship("ResearchReport", back_populates="crop")

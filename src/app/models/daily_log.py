@@ -66,3 +66,4 @@ class DailyLog(Base):
 
     # Relationships
     crop = relationship("Crop", back_populates="daily_logs")
+    research_reports = relationship("ResearchReport", back_populates="daily_log")

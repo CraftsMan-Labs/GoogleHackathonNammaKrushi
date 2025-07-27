@@ -29,13 +29,11 @@ class GovernmentScheme(BaseModel):
         ...,
         description="Official title/name of the government scheme",
         min_length=5,
-        max_length=200,
     )
     description: str = Field(
         ...,
         description="Detailed description of the scheme, its benefits, and eligibility",
         min_length=20,
-        max_length=1000,
     )
     scheme_link: Optional[str] = Field(
         default=None, description="Official website URL or link to the scheme details"
@@ -43,17 +41,14 @@ class GovernmentScheme(BaseModel):
     department: Optional[str] = Field(
         default=None,
         description="Government department or ministry responsible for the scheme",
-        max_length=100,
     )
     eligibility: Optional[str] = Field(
         default=None,
         description="Key eligibility criteria for the scheme",
-        max_length=500,
     )
     benefits: Optional[str] = Field(
         default=None,
         description="Key benefits or financial assistance provided",
-        max_length=500,
     )
     application_process: Optional[str] = Field(
         default=None, description="How to apply for the scheme", max_length=300
@@ -61,12 +56,10 @@ class GovernmentScheme(BaseModel):
     target_beneficiaries: Optional[str] = Field(
         default=None,
         description="Target group or beneficiaries (e.g., 'Small and marginal farmers')",
-        max_length=200,
     )
     state_or_central: Optional[str] = Field(
         default=None,
         description="Whether it's a state or central government scheme",
-        max_length=50,
     )
 
 

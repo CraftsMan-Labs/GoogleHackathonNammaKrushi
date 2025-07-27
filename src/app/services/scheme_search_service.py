@@ -85,7 +85,7 @@ class SchemeSearchService:
 
         # Create model with structured output
         self.model = genai.GenerativeModel(
-            "gemini-1.5-flash",
+            "gemini-2.5-flash",
             generation_config=genai.GenerationConfig(
                 response_mime_type="application/json",
                 response_schema=self.scheme_schema,

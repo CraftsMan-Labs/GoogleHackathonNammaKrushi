@@ -12,6 +12,8 @@ from typing import List, Optional, Dict, Any, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, func
 
+from ..utils.json_serializer import clean_report_data, serialize_for_json
+
 from ..models.research_report import (
     ResearchReport,
     DiseaseResearchReport,
@@ -64,9 +66,16 @@ class ResearchReportService:
         """Create a new research report."""
 
         try:
+            # Clean report data for JSON serialization
+            cleaned_report_data = clean_report_data(report_data)
+
             # Extract summary and confidence from report data
             summary = report_data.get("executive_summary", "")
             confidence_score = report_data.get("confidence_score", 0.0)
+
+            # Handle confidence_score if it's not a number
+            if not isinstance(confidence_score, (int, float)):
+                confidence_score = 0.0
 
             # Create main report
             report = ResearchReport(
@@ -81,7 +90,7 @@ class ResearchReportService:
                 location=location,
                 farm_size_acres=farm_size_acres,
                 analysis_period="Last 12 months",
-                report_data=report_data,
+                report_data=cleaned_report_data,  # Use cleaned data
                 summary=summary,
                 confidence_score=confidence_score,
                 daily_log_id=daily_log_id,

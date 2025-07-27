@@ -260,8 +260,8 @@ class DiseaseIdentificationAgent:
     """Agent responsible for identifying diseases from images and symptoms."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
-        self.vision_model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
+        self.vision_model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def analyze_disease(
         self,
@@ -352,7 +352,7 @@ class EnvironmentalAnalysisAgent:
     """Agent for analyzing environmental factors and their correlation with disease."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def analyze_environmental_factors(
         self,
@@ -540,7 +540,7 @@ class ResearchAgent:
     """Agent for conducting deep research using Exa search."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def conduct_research(
         self,
@@ -698,7 +698,7 @@ class TreatmentRecommendationAgent:
     """Agent for generating treatment recommendations."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def generate_treatment_recommendations(
         self,
@@ -897,7 +897,7 @@ class YieldImpactAnalysisAgent:
     """Agent for analyzing yield impact and economic implications."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def analyze_yield_impact(
         self,
@@ -1088,7 +1088,7 @@ class DailyLogTodoIntegrationAgent:
     """Agent for integrating disease analysis with daily logs and todo tasks."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def create_daily_log_entry(
         self,
@@ -1283,7 +1283,7 @@ class CropDiseaseResearchOrchestrator:
         self.treatment_agent = TreatmentRecommendationAgent()
         self.yield_agent = YieldImpactAnalysisAgent()
         self.integration_agent = DailyLogTodoIntegrationAgent()
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def conduct_deep_research(
         self,

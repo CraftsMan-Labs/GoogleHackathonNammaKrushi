@@ -37,7 +37,7 @@ class BusinessAnalysisRequest(BaseModel):
         description="List of crop types to analyze (use ['all'] for all crops)",
     )
     location: str = Field(
-        default="Karnataka", description="Location of the farm", max_length=200
+        default="Karnataka", description="Location of the farm"
     )
     farm_size_acres: Optional[float] = Field(
         None, description="Farm size in acres", ge=0.1, le=10000

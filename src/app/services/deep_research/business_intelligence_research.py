@@ -346,7 +346,7 @@ class CostAnalysisAgent:
     """Agent responsible for cost analysis and ROI calculations."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def analyze_costs(
         self,
@@ -434,12 +434,13 @@ class CostAnalysisAgent:
         end_date = date.today()
         start_date = end_date - timedelta(days=months * 30)
 
-        # Query sales data
+        # Query sales data through crop relationship
         sales = (
             db.query(Sale)
+            .join(Crop)
             .filter(
-                Sale.user_id == farmer_id,
-                Sale.crop_name.in_(crop_types) if crop_types != ["all"] else True,
+                Crop.user_id == farmer_id,
+                Sale.crop_type.in_(crop_types) if crop_types != ["all"] else True,
                 Sale.sale_date >= start_date,
                 Sale.sale_date <= end_date,
             )
@@ -447,8 +448,12 @@ class CostAnalysisAgent:
         )
 
         revenue_data = {
-            "total_revenue": sum(sale.total_amount for sale in sales),
-            "total_quantity": sum(sale.quantity_sold for sale in sales),
+            "total_revenue": sum(
+                sale.total_amount for sale in sales if sale.total_amount
+            ),
+            "total_quantity": sum(
+                sale.quantity_kg for sale in sales if sale.quantity_kg
+            ),
             "average_price": 0.0,
             "sales_count": len(sales),
         }
@@ -562,7 +567,7 @@ class MarketTrendAnalysisAgent:
     """Agent for analyzing market trends and price forecasting."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def analyze_market_trends(
         self, crop_types: List[str], location: str, db: Session
@@ -603,13 +608,13 @@ class MarketTrendAnalysisAgent:
         prices = (
             db.query(ConsumerPrice)
             .filter(
-                ConsumerPrice.commodity.in_(crop_types)
+                ConsumerPrice.crop_type.in_(crop_types)
                 if crop_types != ["all"]
                 else True,
-                ConsumerPrice.date >= start_date,
-                ConsumerPrice.date <= end_date,
+                ConsumerPrice.price_date >= start_date,
+                ConsumerPrice.price_date <= end_date,
             )
-            .order_by(ConsumerPrice.date)
+            .order_by(ConsumerPrice.price_date)
             .all()
         )
 
@@ -617,11 +622,11 @@ class MarketTrendAnalysisAgent:
         for price in prices:
             price_data.append(
                 {
-                    "date": price.date,
-                    "commodity": price.commodity,
-                    "price": price.price,
-                    "market": price.market,
-                    "unit": price.unit,
+                    "date": price.price_date,
+                    "commodity": price.crop_type,
+                    "price": price.price_per_kg,
+                    "market": price.market_location,
+                    "unit": "kg",
                 }
             )
 
@@ -773,7 +778,7 @@ class GTMStrategyAgent:
     """Agent for developing Go-to-Market strategies."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def develop_gtm_strategy(
         self,
@@ -1212,7 +1217,7 @@ class BusinessOptimizationAgent:
     """Agent for generating business optimization recommendations."""
 
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def generate_optimization_recommendations(
         self,
@@ -1384,7 +1389,7 @@ class BusinessIntelligenceOrchestrator:
         self.gtm_agent = GTMStrategyAgent()
         self.visualization_agent = DataVisualizationAgent()
         self.optimization_agent = BusinessOptimizationAgent()
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     async def conduct_comprehensive_analysis(
         self,
